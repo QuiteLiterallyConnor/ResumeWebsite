@@ -20,16 +20,16 @@ RUN npm install
 # Build Angular project
 RUN ng build --configuration production
 
-# Build Go binary
+# Build Go application
 WORKDIR /app
-RUN go build main.go
+RUN go mod init main.go && go mod tidy && go build main.go
 
 # Stage 2: Runtime container
 FROM alpine:latest
 
 WORKDIR /app
 
-# Copy binary
+# Copy Go binary
 COPY --from=build /app/main .
 
 # Copy built Angular output to 'static'
