@@ -203,20 +203,83 @@ html.show-top .to-top { opacity: 1; pointer-events: auto; transform: none; }
 .content.open { max-height: 200px; }
 
 /* Projects Carousel */
-.projects-track { display: flex; gap: 16px; overflow-x: auto; scroll-behavior: smooth; padding-bottom: 8px; cursor: grab; }
-.projects-track:active { cursor: grabbing; }
+.projects-track { 
+  display: flex; 
+  gap: 16px; 
+  overflow-x: auto; 
+  scroll-behavior: smooth; 
+  padding-bottom: 8px; 
+  cursor: grab; 
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
+}
+.projects-track::-webkit-scrollbar { 
+  display: none; /* Hide scrollbar for Chrome/Safari/Edge */
+}
+.projects-track:active { 
+  cursor: grabbing; 
+}
 .project {
-  flex: 0 0 340px; padding: 16px; border-radius: 14px; border: 1px solid rgba(255,255,255,.12);
+  flex: 0 0 340px; 
+  padding: 16px; 
+  border-radius: 14px; 
+  border: 1px solid rgba(255,255,255,.12);
   background:
     radial-gradient(120px 80px at var(--spot-x,50%) var(--spot-y,50%), rgba(255,255,255,.08), transparent 60%),
     linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
   transition: transform .12s ease, background .2s ease;
 }
-.project.ghost { opacity: 0; pointer-events: none; }
-.project-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-.project p { color: var(--muted); margin: 8px 0 12px; }
-.link { text-decoration: none; font-weight: 700; color: var(--primary); }
-.link:hover { text-decoration: underline; }
+.project.ghost { 
+  opacity: 0; 
+  pointer-events: none; 
+}
+.project-head { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  gap: 8px; 
+}
+.project p { 
+  color: var(--muted); 
+  margin: 8px 0 12px; 
+}
+.link { 
+  text-decoration: none; 
+  font-weight: 700; 
+  color: var(--primary); 
+}
+.link:hover { 
+  text-decoration: underline; 
+}
+
+/* Scroll indicator for projects on mobile */
+.projects-section {
+  position: relative;
+}
+.scroll-indicator {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.3);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0.8;
+  z-index: 5;
+}
+.scroll-indicator::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+  transform: rotate(-45deg) translateX(-2px);
+}
 
 /* Testimonials */
 .quotes { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); }
@@ -380,15 +443,22 @@ html.show-top .to-top { opacity: 1; pointer-events: auto; transform: none; }
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
-    padding-right: 8px;
+    padding: 0 8px 8px 8px;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory; /* Enable snap scrolling */
+    scrollbar-width: none; /* Hide scrollbar for Firefox */
+  }
+  .projects-track::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Chrome/Safari/Edge */
   }
   .project { 
-    flex: 0 0 240px; 
+    flex: 0 0 85%; /* Make cards take up most of the screen width */
     padding: 12px; 
     box-sizing: border-box;
-    max-width: 80%;
+    max-width: 85%;
+    scroll-snap-align: center; /* Snap to center */
+    border-radius: 10px;
   }
   .project-head {
     flex-direction: column;
@@ -401,6 +471,18 @@ html.show-top .to-top { opacity: 1; pointer-events: auto; transform: none; }
   .project p {
     font-size: 14px;
     max-width: 100%;
+  }
+  
+  /* Show scroll indicator on mobile */
+  .scroll-indicator {
+    width: 32px;
+    height: 32px;
+    right: 12px;
+    bottom: 12px;
+  }
+  .scroll-indicator::after {
+    width: 8px;
+    height: 8px;
   }
   
   /* Adjust command palette for mobile */
