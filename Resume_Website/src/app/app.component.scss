@@ -298,6 +298,8 @@ html.show-top .to-top { opacity: 1; pointer-events: auto; transform: none; }
   * {
     max-width: 100vw;
     box-sizing: border-box;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
   }
   
   /* Constrain container width */
@@ -308,6 +310,7 @@ html.show-top .to-top { opacity: 1; pointer-events: auto; transform: none; }
     box-sizing: border-box;
     margin-left: 0;
     margin-right: 0;
+    overflow: hidden;
   }
   
   /* Ensure glass elements fit within viewport */
@@ -318,6 +321,7 @@ html.show-top .to-top { opacity: 1; pointer-events: auto; transform: none; }
     max-width: 100%;
     margin-left: 0;
     margin-right: 0;
+    overflow: hidden;
   }
   
   /* Adjust section padding */
@@ -328,6 +332,7 @@ html.show-top .to-top { opacity: 1; pointer-events: auto; transform: none; }
     max-width: 100%;
     margin-left: 0;
     margin-right: 0;
+    overflow: hidden;
   }
   
   /* Adjust dots navigation for mobile */
@@ -345,8 +350,17 @@ html.show-top .to-top { opacity: 1; pointer-events: auto; transform: none; }
   }
   
   /* Adjust hero section for mobile */
-  .hi { font-size: 18px; }
-  .name { font-size: 32px; }
+  .hi { 
+    font-size: 18px; 
+    max-width: 100%;
+  }
+  .name { 
+    font-size: 32px; 
+    max-width: 100%;
+  }
+  .subtitle {
+    max-width: 100%;
+  }
   .ctas { 
     gap: 8px; 
     margin-top: 12px; 
@@ -367,12 +381,26 @@ html.show-top .to-top { opacity: 1; pointer-events: auto; transform: none; }
     max-width: 100%;
     box-sizing: border-box;
     padding-right: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
   .project { 
-    flex: 0 0 260px; 
+    flex: 0 0 240px; 
     padding: 12px; 
     box-sizing: border-box;
-    max-width: 90%;
+    max-width: 80%;
+  }
+  .project-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .project h3 {
+    font-size: 16px;
+    max-width: 100%;
+  }
+  .project p {
+    font-size: 14px;
+    max-width: 100%;
   }
   
   /* Adjust command palette for mobile */
@@ -384,6 +412,7 @@ html.show-top .to-top { opacity: 1; pointer-events: auto; transform: none; }
     gap: 8px; 
     width: 100%;
     max-width: 100%;
+    grid-template-columns: 1fr;
   }
   .contact-form input, .contact-form textarea {
     max-width: 100%;
@@ -400,6 +429,7 @@ html.show-top .to-top { opacity: 1; pointer-events: auto; transform: none; }
   .chip { 
     padding: 4px 8px; 
     font-size: 12px;
+    margin-bottom: 4px;
   }
   
   /* Ensure main content fits within viewport */
@@ -408,6 +438,7 @@ html.show-top .to-top { opacity: 1; pointer-events: auto; transform: none; }
     max-width: 100%;
     box-sizing: border-box;
     padding: 0;
+    overflow: hidden;
   }
   
   /* Ensure page container fits within viewport */
@@ -417,17 +448,49 @@ html.show-top .to-top { opacity: 1; pointer-events: auto; transform: none; }
     box-sizing: border-box;
     padding: 0;
     margin: 0;
+    overflow: hidden;
   }
   
   /* Adjust marquee for mobile */
   .marquee {
     max-width: 100%;
     width: 100%;
+    overflow: hidden;
   }
   
   /* Adjust lead text for mobile */
   .lead {
     max-width: 100%;
+    font-size: 14px;
+  }
+  
+  /* Adjust timeline for mobile */
+  .timeline {
+    width: 100%;
+    max-width: 100%;
+  }
+  .step {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+  }
+  .step header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  /* Adjust badges for mobile */
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    width: 100%;
+    max-width: 100%;
+  }
+  .badge {
+    font-size: 10px;
+    padding: 4px 6px;
   }
 }
 
