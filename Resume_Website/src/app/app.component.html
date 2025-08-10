@@ -130,8 +130,9 @@
         </div>
       </section>
 
-      <!-- Testimonials -->
-      <!-- <section id="testimonials" class="glass section reveal" aria-label="Testimonials">
+      <!-- Testimonials (optional) -->
+      <!--
+      <section id="testimonials" class="glass section reveal" aria-label="Testimonials">
         <h2>{{ ui.testimonials.heading }}</h2>
         <div class="quotes">
           <figure class="quote tilt-card" *ngFor="let q of testimonials"
@@ -140,7 +141,8 @@
             <figcaption>— {{ q.by }}</figcaption>
           </figure>
         </div>
-      </section> -->
+      </section>
+      -->
 
       <!-- Contact (kept on page; not tracked by header) -->
       <section id="contact" class="glass section reveal" aria-label="Contact">
@@ -155,23 +157,54 @@
               </button>
             </div>
           </div>
-          <form class="contact-form" action="#" method="post" aria-label="Quick message" (submit)="$event.preventDefault()">
+
+          <!-- Contact form wired to POST /api/contact -->
+          <form class="contact-form"
+                (ngSubmit)="submitContact()"
+                #contactForm="ngForm"
+                novalidate
+                aria-label="Quick message">
+
             <label>
               <span>{{ ui.contact.form.name }}</span>
-              <input type="text" required [placeholder]="ui.contact.form.placeholderName">
+              <input type="text"
+                     required
+                     name="name"
+                     [(ngModel)]="contact.name"
+                     [placeholder]="ui.contact.form.placeholderName">
             </label>
+
             <label>
               <span>{{ ui.contact.form.email }}</span>
-              <input type="email" required [placeholder]="ui.contact.form.placeholderEmail">
+              <input type="email"
+                     required
+                     name="email"
+                     [(ngModel)]="contact.email"
+                     [placeholder]="ui.contact.form.placeholderEmail">
             </label>
+
             <label class="full">
               <span>{{ ui.contact.form.message }}</span>
-              <textarea rows="4" required [placeholder]="ui.contact.form.placeholderMsg"></textarea>
+              <textarea rows="4"
+                        required
+                        name="message"
+                        [(ngModel)]="contact.message"
+                        [placeholder]="ui.contact.form.placeholderMsg"></textarea>
             </label>
-            <button class="btn btn-primary" type="submit">
-              {{ ui.contact.form.submit }}
+
+            <button class="btn btn-primary"
+                    type="submit"
+                    [disabled]="contactLoading || !contactForm.form.valid">
+              <ng-container *ngIf="!contactLoading; else sending">
+                {{ ui.contact.form.submit }}
+              </ng-container>
+              <ng-template #sending>Sending…</ng-template>
               <span class="ripple" (mousedown)="ripple($event)"></span>
             </button>
+
+            <!-- lightweight feedback -->
+            <p class="form-msg success" *ngIf="contactSuccess">Thanks—your message was sent.</p>
+            <p class="form-msg error" *ngIf="contactError">{{ contactError }}</p>
           </form>
         </div>
       </section>

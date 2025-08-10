@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, HostListener, Renderer2, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { HeaderComponent } from './header/header.component';
 import { BgDarkComponent } from './backgrounds/bg-dark/bg-dark.component';
 import { BgLightComponent } from './backgrounds/bg-light/bg-light.component';
@@ -15,7 +16,16 @@ type Theme = 'dark'|'light'|'lava'|'constellation';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule, HeaderComponent, BgDarkComponent, BgLightComponent, BgConstellationComponent, BgLavaComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    HttpClientModule,
+    HeaderComponent,
+    BgDarkComponent,
+    BgLightComponent,
+    BgConstellationComponent,
+    BgLavaComponent
+  ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
@@ -42,6 +52,12 @@ export class AppComponent implements AfterViewInit {
 
   backdropOn = true;
 
+  // --- Contact form state ---
+  contact = { name: '', email: '', message: '' };
+  contactLoading = false;
+  contactSuccess = false;
+  contactError = '';
+
   commands: Command[] = [
     { k:'Go',     t:'About',           h:'Navigate to about',        fn: () => this.scrollTo('#about') },
     { k:'Go',     t:'Experience',      h:'Navigate to experience',    fn: () => this.scrollTo('#experience') },
@@ -54,7 +70,12 @@ export class AppComponent implements AfterViewInit {
     { k:'Copy',   t:'Email',           h: '',                         fn: () => this.copy(this.me.email, new Event('copy')) },
   ];
 
-  constructor(private el: ElementRef<HTMLElement>, private r: Renderer2, private data: DataComponent) {
+  constructor(
+    private el: ElementRef<HTMLElement>,
+    private r: Renderer2,
+    private data: DataComponent,
+    private http: HttpClient
+  ) {
     this.me = data.me;
     this.experience = data.experience;
     this.projects = data.projects;
@@ -107,19 +128,17 @@ export class AppComponent implements AfterViewInit {
     el.style.setProperty('--rx', `${-py * 8}deg`);
     el.style.setProperty('--spot-x', `${px * 60 + 50}%`);
     el.style.setProperty('--spot-y', `${py * 60 + 50}%`);
-    el.style.setProperty('--spot-opacity', '1'); // <- show while hovering
+    el.style.setProperty('--spot-opacity', '1');
   }
 
   resetTilt(ev: MouseEvent) {
     const el = ev.currentTarget as HTMLElement;
     el.style.setProperty('--ry', '0deg');
     el.style.setProperty('--rx', '0deg');
-    el.style.setProperty('--spot-opacity', '0'); // <- hide when mouse leaves
-    // (optional) center it so we don't see a jump on next enter before move:
+    el.style.setProperty('--spot-opacity', '0');
     el.style.setProperty('--spot-x', '50%');
     el.style.setProperty('--spot-y', '50%');
   }
-
 
   magnetic(ev: MouseEvent) {
     const el = ev.currentTarget as HTMLElement;
@@ -323,5 +342,34 @@ export class AppComponent implements AfterViewInit {
   isInViewport(el: HTMLElement) {
     const r = el.getBoundingClientRect();
     return r.top < innerHeight && r.bottom > 0;
+  }
+
+  /* ---------- Contact submit ---------- */
+  submitContact() {
+    if (this.contactLoading) return;
+
+    if (!this.contact.name || !this.contact.email || !this.contact.message) {
+      this.contactError = 'Please fill out all fields.';
+      this.contactSuccess = false;
+      return;
+    }
+
+    this.contactLoading = true;
+    this.contactError = '';
+    this.contactSuccess = false;
+
+    this.http.post('/api/contact', this.contact, {
+      headers: { 'Content-Type': 'application/json' }
+    }).subscribe({
+      next: () => {
+        this.contactSuccess = true;
+        this.contact = { name: '', email: '', message: '' };
+      },
+      error: () => {
+        this.contactError = 'Sorry—something went wrong sending your message.';
+      }
+    }).add(() => {
+      this.contactLoading = false;
+    });
   }
 }
