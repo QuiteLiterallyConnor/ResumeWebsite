@@ -33,7 +33,7 @@ func main() {
 
 	staticDir := "./static"
 	saveFile := "contact_messages.jsonl"
-	port := 8080
+	port := 9080
 
 	r := gin.Default()
 

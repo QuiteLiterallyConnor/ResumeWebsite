@@ -39,7 +39,7 @@ COPY --from=build /app/main .
 COPY --from=build /app/Resume_Website/dist/Resume_Website/browser ./static
 
 # Expose port for Go app
-EXPOSE 8080
+EXPOSE 9080
 
 # Run Go binary
 CMD ["./main"]
