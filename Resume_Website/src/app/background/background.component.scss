@@ -1,0 +1,58 @@
+/* ===== Upward Lava FX + Progress (Frosted) ===== */
+:root {
+  --bg: #000; --bg-2: #000;
+  --lava-bg-1: #000; --lava-bg-2: #000;
+  --primary: #7aa2ff;
+  --accent:  #55f0b4;
+}
+
+#fx-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 1;                 /* canvas under the glass */
+  pointer-events: none;
+  animation: hueCycle 90s linear infinite;
+  filter: none;               /* blur handled by glass overlay */
+}
+@media (prefers-reduced-motion: reduce) { #fx-canvas { animation: none; } }
+
+#glass {
+  position: fixed;
+  inset: 0;
+  z-index: 2;                 /* sits above canvas, below content */
+  pointer-events: none;
+  background: rgba(0,0,0,0.28);             /* dark tint for depth */
+  -webkit-backdrop-filter: blur(14px);      /* Safari */
+  backdrop-filter: blur(14px);              /* Frosted glass look */
+  /* optional glass texture */
+  mask-image: radial-gradient(130% 110% at 50% 52%, #000 24%, transparent 100%);
+}
+
+#scroll-progress {
+  position: fixed; top: 0; left: 0; height: 3px; width: var(--w,0); z-index: 40;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  transition: width .1s linear;
+}
+
+/* Black backdrop behind everything */
+.bg { position: fixed; inset: 0; z-index: -2; overflow: hidden; background: #000; }
+
+.grid {
+  position: absolute; inset: -2px;
+  background:
+    radial-gradient(1200px 800px at 20% 30%, rgba(255,255,255,0.012), transparent 55%),
+    radial-gradient(1200px 800px at 80% 70%, rgba(255,255,255,0.008), transparent 55%),
+    linear-gradient(#000, #000);
+  mix-blend-mode: screen;
+  mask-image: radial-gradient(110% 110% at 50% 55%, #000 28%, transparent 100%);
+}
+
+.bg .stars, .bg .glow { display: none !important; }
+
+html.lava-off .bg, html.lava-off #fx-canvas, html.lava-off #glass { display: none !important; }
+
+@keyframes hueCycle {
+  from { filter: hue-rotate(0deg) saturate(110%); }
+  50%  { filter: hue-rotate(180deg) saturate(112%); }
+  to   { filter: hue-rotate(360deg) saturate(110%); }
+}

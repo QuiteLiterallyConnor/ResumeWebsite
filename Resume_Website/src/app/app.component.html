@@ -1,0 +1,205 @@
+<app-background></app-background>
+
+<!-- Sticky dots nav (matches header's sections only) -->
+<nav class="dots-nav" aria-label="Section navigation">
+  <a [class.active]="activeSection==='about'"        (click)="scrollTo('#about')"        aria-label="About"></a>
+  <a [class.active]="activeSection==='experience'"   (click)="scrollTo('#experience')"   aria-label="Experience"></a>
+  <a [class.active]="activeSection==='projects'"     (click)="scrollTo('#projects')"     aria-label="Projects"></a>
+  <a [class.active]="activeSection==='testimonials'" (click)="scrollTo('#testimonials')" aria-label="Testimonials"></a>
+</nav>
+
+<!-- Back to top -->
+<button class="to-top" (click)="scrollTo('body')" aria-label="Back to top">↑</button>
+
+<div class="container">
+  <app-header
+    [activeSection]="activeSection"
+    (setTheme)="setTheme($event)"
+    (toggleTheme)="toggleTheme()"
+    (openPalette)="openPalette()"
+    (navigate)="scrollTo($event)">
+  </app-header>
+</div>
+
+<br>
+
+<!-- Page content -->
+<div class="container">
+  <div class="page">
+
+    <main class="main">
+      <!-- Hero -->
+      <section class="glass hero reveal" id="about" aria-label="About me">
+        <div class="hero-content">
+          <div class="badge pulse">Web Developer</div>
+          <h1>
+            <span class="hi">Hi, I’m</span>
+            <span class="name gradient-text">Connor Hogan</span>
+          </h1>
+          <p class="subtitle">I build crisp, fast, delightful web experiences.</p>
+
+          <div class="ctas">
+            <a class="btn btn-primary magnetic"
+               (mousemove)="magnetic($event)" (mouseleave)="unmagnetic($event)"
+               href="assets/Jonathan_Doe_CV.pdf" (click)="confetti($event)" download
+               aria-label="Download CV">
+              <span>Download CV</span>
+              <span class="ripple" (mousedown)="ripple($event)"></span>
+            </a>
+            <a class="btn btn-ghost magnetic"
+               (mousemove)="magnetic($event)" (mouseleave)="unmagnetic($event)"
+               href="#contact" aria-label="Contact">
+              Contact
+              <span class="ripple" (mousedown)="ripple($event)"></span>
+            </a>
+          </div>
+
+          <!-- Skills marquee -->
+          <div class="marquee" aria-hidden="true">
+            <div class="track">
+              <span *ngFor="let s of marqueeSkills">{{ s }}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- About -->
+      <section class="glass section about reveal" aria-label="About details">
+        <h2>About Me</h2>
+        <p class="lead">
+          I specialize in building robust front-ends with a focus on accessibility, performance, and subtle, tasteful motion.
+        </p>
+        <div class="chips">
+          <button class="chip" *ngFor="let s of me.skills">{{ s }}</button>
+        </div>
+      </section>
+
+      <!-- Experience -->
+      <section id="experience" class="glass section reveal" aria-label="Experience timeline">
+        <h2>Experience</h2>
+        <div class="timeline">
+          <article class="step tilt-card"
+                  *ngFor="let e of experience; let i = index"
+                  (click)="toggleStep(i)"
+                  (mousemove)="tilt($event)" (mouseleave)="resetTilt($event)">
+            <header>
+              <div>
+                <div class="role">{{ e.role }}</div>
+                <div class="company">{{ e.company }}</div>
+              </div>
+              <div class="meta">
+                <span class="badge">{{ e.year }}</span>
+                <button class="btn icon caret" [class.open]="openStep===i" aria-label="Expand"></button>
+              </div>
+            </header>
+            <div class="content" [class.open]="openStep===i" [attr.aria-hidden]="openStep===i ? 'false':'true'">
+              <p>{{ e.blurb }}</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Projects -->
+      <section id="projects" class="glass section reveal" aria-label="Projects">
+        <h2>Projects</h2>
+
+        <!-- Carousel -->
+        <div class="projects-track" #projectsTrack role="listbox"
+            (mousedown)="startDrag($event)" (mousemove)="onDrag($event)" (mouseleave)="endDrag()"
+            (mouseup)="endDrag()" (wheel)="wheelScroll($event)" aria-label="Projects carousel">
+          <article class="project tilt-card"
+                  *ngFor="let p of projects" (mousemove)="tilt($event)" (mouseleave)="resetTilt($event)">
+            <div class="project-head">
+              <h3>{{ p.title }}</h3>
+              <div class="badges">
+                <span class="badge" *ngFor="let t of p.tags">{{ t }}</span>
+              </div>
+            </div>
+            <p>{{ p.desc }}</p>
+            <a [href]="p.link" class="link"
+               [attr.aria-label]="'Read more about ' + p.title">Read More →</a>
+          </article>
+          <!-- removed ghost duplicates to prevent excessive scroll width -->
+        </div>
+      </section>
+
+      <!-- Testimonials -->
+      <section id="testimonials" class="glass section reveal" aria-label="Testimonials">
+        <h2>Testimonials</h2>
+        <div class="quotes">
+          <figure class="quote tilt-card" (mousemove)="tilt($event)" (mouseleave)="resetTilt($event)">
+            <blockquote>Connor delivered a pristine UI and shipped on time. Our KPIs improved across the board.</blockquote>
+            <figcaption>— Product Lead, Company ABC</figcaption>
+          </figure>
+          <figure class="quote tilt-card" (mousemove)="tilt($event)" (mouseleave)="resetTilt($event)">
+            <blockquote>Exceptionally thoughtful about performance and accessibility. A joy to collaborate with.</blockquote>
+            <figcaption>— Eng Manager, Company XYZ</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <!-- Contact (kept on page; not tracked by header) -->
+      <section id="contact" class="glass section reveal" aria-label="Contact">
+        <h2>Contact</h2>
+        <div class="contact-grid">
+          <div>
+            <p>Let’s build something great together.</p>
+            <div class="contact-actions">
+              <button class="btn" (click)="copy(me.email, $event)" aria-label="Copy email">
+                {{ me.email }}
+                <span class="ripple" (mousedown)="ripple($event)"></span>
+              </button>
+              <button class="btn" (click)="copy(me.phone, $event)" aria-label="Copy phone">
+                {{ me.phone }}
+                <span class="ripple" (mousedown)="ripple($event)"></span>
+              </button>
+              <a class="btn btn-primary" [href]="'mailto:' + me.email" aria-label="Open mail client">
+                Email Me
+                <span class="ripple" (mousedown)="ripple($event)"></span>
+              </a>
+            </div>
+          </div>
+          <form class="contact-form" action="#" method="post" aria-label="Quick message" (submit)="$event.preventDefault()">
+            <label>
+              <span>Name</span>
+              <input type="text" required placeholder="Your name">
+            </label>
+            <label>
+              <span>Email</span>
+              <input type="email" required placeholder="you@example.com">
+            </label>
+            <label class="full">
+              <span>Message</span>
+              <textarea rows="4" required placeholder="What can I do for you?"></textarea>
+            </label>
+            <button class="btn btn-primary" type="submit">
+              Send
+              <span class="ripple" (mousedown)="ripple($event)"></span>
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <p>© {{year}} Connor Hogan — All rights reserved.</p>
+      </footer>
+    </main>
+  </div>
+</div>
+
+<!-- Command Palette -->
+<div class="palette-backdrop" [class.open]="paletteOpen" (click)="closePalette()"></div>
+<div class="palette" [class.open]="paletteOpen" role="dialog" aria-modal="true" aria-label="Command palette">
+  <input #paletteInput type="text" class="palette-input" placeholder="Type a command or search…"
+         [(ngModel)]="paletteQuery" (keydown)="paletteKey($event)">
+  <ul class="palette-list">
+    <li *ngFor="let cmd of filteredCommands(); let i = index"
+        [class.active]="i===paletteIndex"
+        (click)="runCommand(cmd)">
+      <span class="k">{{cmd.k}}</span>
+      <span class="t">{{cmd.t}}</span>
+      <span class="h">{{cmd.h}}</span>
+    </li>
+  </ul>
+  <div class="palette-hint">Press Esc to close • ↑↓ to navigate • Enter to run</div>
+</div>

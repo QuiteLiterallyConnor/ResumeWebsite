@@ -1,0 +1,43 @@
+<header class="glass header sticky" role="banner" aria-label="Site header">
+  <!-- Top-edge scroll progress -->
+  <div class="scroll-progress" [style.transform]="'scaleX(' + scrollProgress + ')'"></div>
+
+  <div class="header-inner">
+    <!-- Empty spacer to balance actions -->
+    <div class="header-spacer"></div>
+
+    <!-- Centered Nav -->
+    <nav #navRef class="nav" role="navigation" aria-label="Primary" (mousemove)="onNavMove($event)">
+      <a href="#about" data-id="about"        [class.active]="activeSection==='about'"        (click)="onLinkClick($event,'about')">About</a>
+      <a href="#experience" data-id="experience" [class.active]="activeSection==='experience'" (click)="onLinkClick($event,'experience')">Experience</a>
+      <a href="#projects" data-id="projects"  [class.active]="activeSection==='projects'"     (click)="onLinkClick($event,'projects')">Projects</a>
+      <a href="#testimonials" data-id="testimonials" [class.active]="activeSection==='testimonials'" (click)="onLinkClick($event,'testimonials')">Testimonials</a>
+
+      <!-- Alive ink + soft glow -->
+      <span class="nav-ink" [style.transform]="navInkTransform"></span>
+      <span class="nav-ink-glow" [style.transform]="navInkTransform"></span>
+    </nav>
+
+    <!-- Actions -->
+    <div class="header-actions">
+      <label class="theme-select" aria-label="Theme">
+        <select class="theme-picker" (change)="onThemeChange($event)" [value]="currentTheme">
+          <option value="dark">Dark</option>
+          <option value="light">Light</option>
+          <option value="lava">Lava Lamp</option>
+          <option value="constellation">Constellation</option>
+        </select>
+        <span class="chev" aria-hidden="true">▾</span>
+      </label>
+
+
+      <button class="btn icon theme" (click)="toggleTheme.emit()" aria-label="Toggle theme">
+        <span class="dot"></span>
+      </button>
+
+      <button class="btn cmd" (click)="openPalette.emit()" aria-label="Open command palette" title="Command Palette (⌘K)">
+        <span class="keys">⌘K</span>
+      </button>
+    </div>
+  </div>
+</header>
