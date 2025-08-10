@@ -354,6 +354,14 @@ export class AppComponent implements AfterViewInit {
       return;
     }
 
+    // Validate email format
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(this.contact.email)) {
+      this.contactError = 'Please enter a valid email address.';
+      this.contactSuccess = false;
+      return;
+    }
+
     this.contactLoading = true;
     this.contactError = '';
     this.contactSuccess = false;
