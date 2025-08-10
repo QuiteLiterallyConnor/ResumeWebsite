@@ -80,7 +80,7 @@ func main() {
 	// Map assets for Angular builds
 	r.Static("/assets", filepath.Join(staticDir, "assets"))
 
-	fmt.Printf("Server running: http://127.0.0.1:%d/\n", port)
+	fmt.Printf("Server running: http://0.0.0.0:%d/\n", port)
 	r.Run(fmt.Sprintf(":%d", port))
 }
 
