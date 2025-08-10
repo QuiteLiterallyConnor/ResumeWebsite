@@ -157,7 +157,7 @@ export class DataComponent {
     },
     hero: {
       hi: 'Hi, I’m',
-      subtitle: 'I build crisp, fast, delightful web experiences.',
+      subtitle: 'I build robust full stack services for crisp web experiences.',
       ctas: { download: 'Download CV', contact: 'Contact' },
       cvPath: 'connor-hogan-resume-oct-2024.pdf'
     },
