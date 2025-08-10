@@ -29,6 +29,9 @@ FROM alpine:latest
 
 WORKDIR /app
 
+# Set environment variable
+ENV DISCORD_WEBHOOK=""
+
 # Copy Go binary
 COPY --from=build /app/main .
 
@@ -36,7 +39,7 @@ COPY --from=build /app/main .
 COPY --from=build /app/Resume_Website/dist/Resume_Website/browser ./static
 
 # Expose port for Go app
-EXPOSE 9090
+EXPOSE 8080
 
 # Run Go binary
 CMD ["./main"]

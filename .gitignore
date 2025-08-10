@@ -32,3 +32,6 @@ Resume_Website/dist
 static/*
 
 main
+
+go.mod
+go.sum
