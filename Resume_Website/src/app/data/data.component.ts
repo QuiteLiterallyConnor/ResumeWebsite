@@ -7,7 +7,6 @@ export interface Me {
   name: string;
   title: string;
   email: string;
-  phone: string;
   location: string;
   skills: string[];
 }
@@ -71,7 +70,6 @@ export class DataComponent {
     name: 'Connor Hogan',
     title: 'Software Engineer',
     email: '628cjh@gmail.com',
-    phone: '+1 234 567 880',
     location: 'Huntsville, AL',
     skills: ['Go', 'Python', 'C++', 'C', 'HTML', 'JavaScript', 'CSS', 'TypeScript', 'SCSS', 'Angular', 'Chart.js', 'D3', 'A11y']
   };
@@ -161,7 +159,7 @@ export class DataComponent {
       hi: 'Hi, I’m',
       subtitle: 'I build crisp, fast, delightful web experiences.',
       ctas: { download: 'Download CV', contact: 'Contact' },
-      cvPath: 'assets/Jonathan_Doe_CV.pdf'
+      cvPath: 'connor-hogan-resume-oct-2024.pdf'
     },
     about: {
       heading: 'About Me',

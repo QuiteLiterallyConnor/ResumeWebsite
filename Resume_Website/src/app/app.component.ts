@@ -65,8 +65,7 @@ export class AppComponent implements AfterViewInit {
     { k:'Go',     t:'Testimonials',    h:'Navigate to testimonials',  fn: () => this.scrollTo('#testimonials') },
     { k:'Toggle', t:'Theme',           h:'Cycle theme',               fn: () => this.toggleTheme() },
     { k:'Toggle', t:'Backdrop',        h:'Stars / glows on/off',      fn: () => this.toggleBackdrop() },
-    { k:'Action', t:'Download CV',     h:'Grab a copy of my CV',      fn: () => this.triggerCV() },
-    { k:'Action', t:'Print Resume',    h: 'Open print dialog',        fn: () => window.print() },
+    { k:'Action', t:'Download Resume', h:'Grab a copy of my CV',      fn: () => this.triggerCV() },
     { k:'Copy',   t:'Email',           h: '',                         fn: () => this.copy(this.me.email, new Event('copy')) },
   ];
 
@@ -213,8 +212,10 @@ export class AppComponent implements AfterViewInit {
   runCommand(cmd: Command) { this.closePalette(); cmd.fn(); }
   triggerCV() {
     const link = document.createElement('a');
-    link.href = this.ui.hero.cvPath;
-    link.download = '';
+    // Remove 'public/' prefix if present, as Angular serves these files from root
+    const path = this.ui.hero.cvPath.replace(/^public\//, '/');
+    link.href = path;
+    link.download = this.ui.hero.cvPath.split('/').pop() || '';
     link.click();
     this.confetti();
   }
