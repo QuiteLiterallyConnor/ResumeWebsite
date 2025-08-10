@@ -178,10 +178,45 @@ html.is-scrolled .header.sticky {
 @media (max-width: 900px) {
   .brand-type { display: none; }
   .btn.cmd { display: none; }
+  .header-inner { padding: 0 12px; }
 }
+
 @media (max-width: 640px) {
   .theme-select { display: none; }
-  .nav { max-width: 64vw; }
+  .nav { 
+    max-width: 80vw;
+    padding: 3px;
+    gap: 4px;
+  }
+  .nav a {
+    --pad-x: 10px;
+    padding: 8px var(--pad-x);
+    font-size: 14px;
+  }
+  .header-actions { gap: 6px; }
+  .btn.icon { width: 36px; height: 36px; }
+}
+
+@media (max-width: 480px) {
+  .header.sticky { height: auto; min-height: var(--hdr-h-scrolled); padding: 6px 0; }
+  .header-inner { padding: 0 10px; }
+  .nav { 
+    max-width: 100%;
+    width: 100%;
+    justify-content: center;
+    border-radius: 8px;
+  }
+  .nav a {
+    --pad-x: 8px;
+    padding: 6px var(--pad-x);
+    font-size: 13px;
+  }
+  .nav-ink, .nav-ink-glow {
+    height: 2px;
+    bottom: 1px;
+  }
+  .header-actions { gap: 4px; }
+  .btn.icon { width: 32px; height: 32px; }
 }
 
 /* Reduced motion support */

@@ -111,7 +111,9 @@
         <!-- Carousel -->
         <div class="projects-track" #projectsTrack role="listbox"
             (mousedown)="startDrag($event)" (mousemove)="onDrag($event)" (mouseleave)="endDrag()"
-            (mouseup)="endDrag()" (wheel)="wheelScroll($event)" [attr.aria-label]="ui.projects.ariaCarousel">
+            (mouseup)="endDrag()" (wheel)="wheelScroll($event)" 
+            (touchstart)="startTouch($event)" (touchmove)="onTouch($event)" (touchend)="endTouch()"
+            [attr.aria-label]="ui.projects.ariaCarousel">
           <article class="project tilt-card"
                   *ngFor="let p of projects" (mousemove)="tilt($event)" (mouseleave)="resetTilt($event)">
             <div class="project-head">

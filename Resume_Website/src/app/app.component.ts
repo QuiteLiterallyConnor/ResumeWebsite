@@ -164,19 +164,25 @@ export class AppComponent implements AfterViewInit {
 
   /* ---------- CAROUSEL ---------- */
   dragging = false; dragStartX = 0; scrollStartX = 0; velX = 0; lastX = 0; raf?: number;
-  startDrag(e: MouseEvent) {
-    this.dragging = true; this.dragStartX = e.clientX;
+  startDrag(e: MouseEvent | TouchEvent) {
+    this.dragging = true; 
+    this.dragStartX = e instanceof MouseEvent ? e.clientX : e.touches[0].clientX;
     if (!this.projectsTrack) return;
     this.scrollStartX = this.projectsTrack.nativeElement.scrollLeft;
+    this.lastX = this.dragStartX;
     cancelAnimationFrame(this.raf!);
   }
-  onDrag(e: MouseEvent) {
+  
+  onDrag(e: MouseEvent | TouchEvent) {
     if (!this.dragging || !this.projectsTrack) return;
-    const dx = e.clientX - this.dragStartX;
+    const clientX = e instanceof MouseEvent ? e.clientX : e.touches[0].clientX;
+    const dx = clientX - this.dragStartX;
     const el = this.projectsTrack.nativeElement;
     el.scrollLeft = this.scrollStartX - dx;
-    this.velX = e.clientX - this.lastX; this.lastX = e.clientX;
+    this.velX = clientX - this.lastX; 
+    this.lastX = clientX;
   }
+  
   endDrag() {
     if (!this.dragging || !this.projectsTrack) return;
     this.dragging = false;
@@ -187,6 +193,25 @@ export class AppComponent implements AfterViewInit {
       if (Math.abs(this.velX) > 0.5) this.raf = requestAnimationFrame(momentum);
     };
     this.raf = requestAnimationFrame(momentum);
+  }
+  
+  // Touch event handlers
+  startTouch(e: TouchEvent) {
+    if (e.touches.length === 1) {
+      e.preventDefault(); // Prevent page scrolling while swiping carousel
+      this.startDrag(e);
+    }
+  }
+  
+  onTouch(e: TouchEvent) {
+    if (e.touches.length === 1) {
+      e.preventDefault();
+      this.onDrag(e);
+    }
+  }
+  
+  endTouch() {
+    this.endDrag();
   }
   wheelScroll(e: WheelEvent) {
     if (!this.projectsTrack) return;
