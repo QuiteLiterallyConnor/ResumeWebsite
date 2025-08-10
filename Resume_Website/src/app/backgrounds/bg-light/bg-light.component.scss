@@ -1,0 +1,67 @@
+.bg-light {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: #f4f4f4;
+  overflow: hidden;
+
+  /* Apply dark text colors for light theme */
+  &::ng-deep {
+    :root {
+      --ink: #0b1930;
+      --muted: #526276;
+    }
+  }
+
+  /* Main animated gradient layer */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 20% 40%, rgba(255, 182, 109, 0.4) 0%, transparent 50%),
+      radial-gradient(circle at 80% 30%, rgba(123, 200, 255, 0.35) 0%, transparent 55%),
+      radial-gradient(circle at 50% 80%, rgba(165, 255, 165, 0.35) 0%, transparent 55%);
+    filter: blur(80px) saturate(1.2);
+    animation: floatColors1 18s ease-in-out infinite alternate;
+  }
+
+  /* Secondary slower layer for depth */
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 15% 85%, rgba(255, 109, 180, 0.3) 0%, transparent 50%),
+      radial-gradient(circle at 85% 70%, rgba(255, 255, 140, 0.3) 0%, transparent 50%);
+    filter: blur(120px) saturate(1.1);
+    animation: floatColors2 30s ease-in-out infinite alternate;
+    mix-blend-mode: screen;
+  }
+
+  /* Subtle grain overlay */
+  &::before,
+  &::after {
+    will-change: background-position;
+  }
+
+  /* Grain on a separate pseudo-element for clarity */
+  .grain {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E") repeat;
+    opacity: 0.08;
+    pointer-events: none;
+  }
+}
+
+@keyframes floatColors1 {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 100% 100%; }
+}
+
+@keyframes floatColors2 {
+  0% { background-position: 100% 100%; }
+  100% { background-position: 0% 0%; }
+}

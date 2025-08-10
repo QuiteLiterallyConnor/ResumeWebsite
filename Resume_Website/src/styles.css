@@ -15,6 +15,40 @@
   --border: 1px solid rgba(255,255,255,0.08);
 }
 
+/* Light theme colors */
+html.theme-light {
+  --text: #0b1930;  /* Dark text color for light theme */
+  --muted: #526276; /* Dark muted text color for light theme */
+  --border: 1px solid rgba(0,0,0,0.08); /* Dark border for light theme */
+  --bg: #f6f8fb; /* Light background for light theme */
+  --bg-accent: #eef2f8; /* Light accent background for light theme */
+  --card: rgba(255,255,255,0.8); /* Light card background for light theme */
+  --card-2: rgba(255,255,255,0.65); /* Light card secondary background for light theme */
+  --shadow: 0 20px 50px rgba(0,0,0,0.15); /* Lighter shadow for light theme */
+}
+
+/* Additional light theme styles */
+html.theme-light .btn-ghost {
+  border-color: rgba(0,0,0,0.14);
+}
+
+html.theme-light .badge {
+  border-color: rgba(0,0,0,0.14);
+  background: rgba(0,0,0,0.04);
+}
+
+html.theme-light .timeline::before {
+  background: rgba(0,0,0,0.1);
+}
+
+html.theme-light .list-item:hover {
+  background: rgba(0,0,0,0.04);
+}
+
+html.theme-light .project {
+  background: linear-gradient(180deg, rgba(0,0,0,0.03), rgba(0,0,0,0.06));
+}
+
 /* -------- Base reset -------- */
 * { box-sizing: border-box; }
 html, body { height: 100%; }

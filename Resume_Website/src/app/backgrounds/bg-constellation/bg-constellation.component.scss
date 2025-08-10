@@ -1,0 +1,8 @@
+/* src/app/backgrounds/bg-constellation/bg-constellation.component.scss */
+.bg-constellation {
+  position: fixed;
+  inset: 0;
+  z-index: -1;      /* behind content */
+  pointer-events: none;
+  /* keep it crisp; background is painted in drawFrame() */
+}

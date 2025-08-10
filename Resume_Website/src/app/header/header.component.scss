@@ -14,6 +14,7 @@
   height: var(--hdr-h); padding: 0; display: flex; align-items: center;
   transition: height .25s ease, background .25s ease, box-shadow .25s ease, border-color .25s ease;
   margin-bottom: 1px; isolation: isolate; /* for progress bar */
+  width: 100%; /* Ensure full width within container */
 }
 html.is-scrolled .header.sticky { height: var(--hdr-h-scrolled); }
 .header-inner {
@@ -123,13 +124,38 @@ html.is-scrolled .header.sticky { height: var(--hdr-h-scrolled); }
 /* Theme select, upgraded */
 .theme-select { position: relative; display: inline-flex; align-items: center; }
 .theme-picker {
-  appearance: none; background: transparent; color: var(--ink);
-  border: 1px solid rgba(255,255,255,.14); border-radius: 12px; padding: 8px 28px 8px 12px;
-  font-weight: 800; letter-spacing: .2px;
-  box-shadow: 0 8px 24px rgba(0,0,0,.18), 0 1px 0 rgba(255,255,255,.06) inset;
-  transition: border-color .2s ease, background .2s ease;
+  appearance: none;
+  background-color: rgba(0, 0, 0, 0.4); /* semi-dark so text stands out */
+  color: var(--ink); /* or var(--text) if you have it */
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  padding: 8px 28px 8px 12px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18),
+              0 1px 0 rgba(255, 255, 255, 0.06) inset;
+  transition: border-color 0.2s ease, background 0.2s ease;
 }
-.theme-picker:hover { background: rgba(255,255,255,.03); }
+
+.theme-picker:hover {
+  background-color: rgba(0, 0, 0, 0.55); /* slightly darker on hover */
+}
+
+/* Light theme styles */
+html.theme-light .theme-picker {
+  background-color: #ffffff;
+  color: #0b1930;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+html.theme-light .theme-picker:hover {
+  background-color: #f0f5ff;
+}
+
+html.theme-light .theme-select .chev {
+  color: #0b1930;
+}
+
 .theme-select .chev {
   position: absolute; right: 10px; pointer-events: none; color: var(--muted);
 }
@@ -141,10 +167,11 @@ html.is-scrolled .header.sticky { height: var(--hdr-h-scrolled); }
 
 /* Elevated when scrolled */
 html.is-scrolled .header.sticky {
-  background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.04) 100%),
-              linear-gradient(0deg, rgba(255,255,255,.04), rgba(255,255,255,0));
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.12) 100%),
+              linear-gradient(0deg, rgba(255,255,255,.1), rgba(255,255,255,0.05));
+  border-bottom: 1px solid rgba(255,255,255,0.12);
   box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+  backdrop-filter: blur(var(--blur)); /* Enhanced blur effect */
 }
 
 /* Responsive tweaks */

@@ -24,6 +24,55 @@
     --primary:#2e7de9; --primary-2:#1f66c5; --accent:#008f6b; --shadow: 0 20px 50px rgba(0,0,0,.15);
   }
 }
+html.theme-light {
+  color-scheme: light;
+  --bg: #f6f8fb;
+  --bg-2: #eef2f8;
+  --ink: #0b1930;
+  --muted: #526276;
+  --card: rgba(255,255,255,.8);
+  --card-2: rgba(255,255,255,.65);
+  --border: 1px solid rgba(0,0,0,.08);
+  --primary: #2e7de9;
+  --primary-2: #1f66c5;
+  --accent: #008f6b;
+  --shadow: 0 20px 50px rgba(0,0,0,.15);
+}
+
+/* Direct text color rules for light theme */
+html.theme-light body,
+html.theme-light .container,
+html.theme-light .page,
+html.theme-light .section,
+html.theme-light .hero,
+html.theme-light .glass,
+html.theme-light .btn,
+html.theme-light .chip,
+html.theme-light .quote blockquote,
+html.theme-light .project p,
+html.theme-light .lead,
+html.theme-light .role,
+html.theme-light .company,
+html.theme-light .footer,
+html.theme-light h1,
+html.theme-light h2,
+html.theme-light h3,
+html.theme-light h4,
+html.theme-light h5,
+html.theme-light h6,
+html.theme-light p,
+html.theme-light span:not(.gradient-text),
+html.theme-light div {
+  color: #0b1930 !important;
+}
+
+html.theme-light .muted,
+html.theme-light .subtitle,
+html.theme-light .quote figcaption,
+html.theme-light .badge,
+html.theme-light .hi {
+  color: #526276 !important;
+}
 html.theme-deep {
   --bg: #070b14; --bg-2:#050811; --card:rgba(255,255,255,.05); --card-2:rgba(255,255,255,.035);
 }
@@ -39,6 +88,15 @@ img { max-width: 100%; display: block; }
 body, html { background: var(--bg); color: var(--ink); }
 .container { max-width: 1140px; margin-inline: auto; padding: 1rem 16px 0; }
 .container + .container { padding-top: 0 !important; }
+
+/* Container for sticky header */
+.sticky-container {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding-top: 0;
+  padding-bottom: 0;
+}
 
 .page { display: grid; grid-template-columns: 1fr; gap: 24px; }
 
@@ -220,3 +278,22 @@ html.show-top .to-top { opacity: 1; pointer-events: auto; transform: none; }
   * { animation: none !important; transition: none !important; }
   .marquee .track { animation: none !important; }
 }
+/* Base: hidden when not hovered */
+.tilt-card {
+  --spot-x: 50%;
+  --spot-y: 50%;
+  --spot-opacity: 0; /* default hidden */
+}
+
+/* Example spotlight layer (adjust selector/properties to match your current impl) */
+.tilt-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(600px circle at var(--spot-x) var(--spot-y),
+                              rgba(255,255,255,0.15), transparent 60%);
+  opacity: var(--spot-opacity);
+  transition: opacity 180ms ease;
+}
+

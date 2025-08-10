@@ -9,22 +9,21 @@
 #fx-canvas {
   position: fixed;
   inset: 0;
-  z-index: 1;                 /* canvas under the glass */
+  z-index: -1;                /* canvas behind content but above background */
   pointer-events: none;
   animation: hueCycle 90s linear infinite;
-  filter: none;               /* blur handled by glass overlay */
+  filter: none;
 }
 @media (prefers-reduced-motion: reduce) { #fx-canvas { animation: none; } }
 
 #glass {
   position: fixed;
   inset: 0;
-  z-index: 2;                 /* sits above canvas, below content */
+  z-index: -1;                /* same level as canvas, below content */
   pointer-events: none;
-  background: rgba(0,0,0,0.28);             /* dark tint for depth */
-  -webkit-backdrop-filter: blur(14px);      /* Safari */
-  backdrop-filter: blur(14px);              /* Frosted glass look */
-  /* optional glass texture */
+  background: rgba(0,0,0,0.28);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
   mask-image: radial-gradient(130% 110% at 50% 52%, #000 24%, transparent 100%);
 }
 

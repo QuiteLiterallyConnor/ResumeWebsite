@@ -2,59 +2,45 @@ import { AfterViewInit, Component, ElementRef, HostListener, Renderer2, ViewChil
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from './header/header.component';
-import { BackgroundComponent } from './background/background.component';
+import { BgDarkComponent } from './backgrounds/bg-dark/bg-dark.component';
+import { BgLightComponent } from './backgrounds/bg-light/bg-light.component';
+import { BgLavaComponent } from './backgrounds/bg-lava/bg-lava.component';
+import { BgConstellationComponent } from './backgrounds/bg-constellation/bg-constellation.component';
+import { DataComponent, Me, ExperienceItem, ProjectItem, TestimonialItem, UIStrings } from './data/data.component';
 
 type HeaderSection = 'about'|'experience'|'projects'|'testimonials';
 type Command = { k: string; t: string; h: string; fn: () => void };
+type Theme = 'dark'|'light'|'lava'|'constellation';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule, HeaderComponent, BackgroundComponent],
+  imports: [CommonModule, FormsModule, HeaderComponent, BgDarkComponent, BgLightComponent, BgConstellationComponent, BgLavaComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements AfterViewInit {
-
   year = new Date().getFullYear();
   openStep: number | null = 0;
   activeSection: HeaderSection = 'about';
+  theme: Theme = 'lava';
 
-  marqueeSkills = Array(12).fill(['HTML','CSS','TypeScript','Angular','RxJS','Node','Express','Chart.js','D3','SCSS','WebGL','PWAs']).flat();
+  // data from provider
+  me!: Me;
+  experience!: ExperienceItem[];
+  projects!: ProjectItem[];
+  testimonials!: TestimonialItem[];
+  marqueeSkills!: string[];
+  ui!: UIStrings;
 
   @ViewChild('projectsTrack') projectsTrack?: ElementRef<HTMLDivElement>;
   @ViewChild('paletteInput') paletteInput?: ElementRef<HTMLInputElement>;
 
-  // Command palette state
   paletteOpen = false;
   paletteQuery = '';
   paletteIndex = 0;
 
-  // Backdrop toggle (stars/glow grid)
   backdropOn = true;
-
-  me = {
-    name: 'Connor Hogan',
-    title: 'Software Engineer',
-    email: 'email@example.com',
-    phone: '+1 234 567 880',
-    location: 'San Francisco, CA',
-    skills: ['HTML', 'CSS', 'JavaScript', 'TypeScript', 'Angular', 'RxJS', 'Node', 'D3', 'Chart.js', 'SCSS']
-  };
-
-  experience = [
-    { year: '2020 — Present', role: 'Senior Developer', company: 'Company ABC',
-      blurb: 'Personal portfolio website to showcase my work and skills.' },
-    { year: '2018 — 2020', role: 'Web Developer', company: 'Company XYZ',
-      blurb: 'Developed a full-featured e-commerce platform with payment integration.' }
-  ];
-
-  projects = [
-    { title: 'Portfolio Website', desc: 'Personal site powered by Angular + tasteful motion.', link: '#', tags: ['Angular','SCSS','A11y'] },
-    { title: 'E-Commerce Platform', desc: 'Full-featured storefront with admin dashboard.', link: '#', tags: ['Node','Stripe','MongoDB'] },
-    { title: 'Realtime Dashboard', desc: 'Low-latency charts and alerts with WebSockets.', link: '#', tags: ['WebSockets','D3','Chart.js'] },
-    { title: 'Design System', desc: 'Composable UI kit built for speed.', link: '#', tags: ['Design Tokens','Theming'] }
-  ];
 
   commands: Command[] = [
     { k:'Go',     t:'About',           h:'Navigate to about',        fn: () => this.scrollTo('#about') },
@@ -64,36 +50,45 @@ export class AppComponent implements AfterViewInit {
     { k:'Toggle', t:'Theme',           h:'Cycle theme',               fn: () => this.toggleTheme() },
     { k:'Toggle', t:'Backdrop',        h:'Stars / glows on/off',      fn: () => this.toggleBackdrop() },
     { k:'Action', t:'Download CV',     h:'Grab a copy of my CV',      fn: () => this.triggerCV() },
-    { k:'Action', t:'Print Resume',    h:'Open print dialog',         fn: () => window.print() },
-    { k:'Copy',   t:'Email',           h:this.me.email,               fn: () => this.copy(this.me.email, new Event('copy')) },
-    { k:'Copy',   t:'Phone',           h:this.me.phone,               fn: () => this.copy(this.me.phone, new Event('copy')) },
+    { k:'Action', t:'Print Resume',    h: 'Open print dialog',        fn: () => window.print() },
+    { k:'Copy',   t:'Email',           h: '',                         fn: () => this.copy(this.me.email, new Event('copy')) },
   ];
 
-  constructor(private el: ElementRef<HTMLElement>, private r: Renderer2) {}
+  constructor(private el: ElementRef<HTMLElement>, private r: Renderer2, private data: DataComponent) {
+    this.me = data.me;
+    this.experience = data.experience;
+    this.projects = data.projects;
+    this.testimonials = data.testimonials;
+    this.marqueeSkills = data.marqueeSkills;
+    this.ui = data.ui;
+
+    this.commands = this.commands.map(c => {
+      if (c.t === 'Email') return { ...c, h: this.me.email };
+      return c;
+    });
+  }
 
   /* ---------- THEME ---------- */
   toggleTheme() {
-    const html = document.documentElement;
-    if (html.classList.contains('theme-midnight')) html.className = 'theme-deep';
-    else if (html.classList.contains('theme-deep')) html.className = '';
-    else html.className = 'theme-midnight';
-    localStorage.setItem('theme', html.className);
+    const order: Theme[] = ['dark','light','lava','constellation'];
+    const next = order[(order.indexOf(this.theme) + 1) % order.length];
+    this.theme = next;
+    localStorage.setItem('themeName', this.theme);
+    this.updateThemeClass();
   }
-  setTheme(mode: string) {
-    const cls =
-      mode === 'midnight' ? 'theme-midnight' :
-      mode === 'deep' ? 'theme-deep' : '';
-    document.documentElement.className = cls;
-    localStorage.setItem('theme', cls);
+  onTheme(mode: Theme) {
+    this.theme = mode;
+    localStorage.setItem('themeName', this.theme);
+    this.updateThemeClass();
   }
   initTheme() {
-    const stored = localStorage.getItem('theme');
-    if (stored !== null) {
-      document.documentElement.className = stored;
-      return;
-    }
-    const prefersDark = matchMedia('(prefers-color-scheme: dark)').matches;
-    document.documentElement.className = prefersDark ? 'theme-midnight' : '';
+    const stored = localStorage.getItem('themeName') as Theme | null;
+    this.theme = stored ?? 'lava';
+    this.updateThemeClass();
+  }
+  updateThemeClass() {
+    document.documentElement.classList.remove('theme-dark', 'theme-light', 'theme-lava', 'theme-constellation');
+    document.documentElement.classList.add(`theme-${this.theme}`);
   }
 
   /* ---------- BACKDROP ---------- */
@@ -106,18 +101,25 @@ export class AppComponent implements AfterViewInit {
   tilt(ev: MouseEvent) {
     const el = ev.currentTarget as HTMLElement;
     const b = el.getBoundingClientRect();
-       const px = (ev.clientX - b.left) / b.width - 0.5;
+    const px = (ev.clientX - b.left) / b.width - 0.5;
     const py = (ev.clientY - b.top) / b.height - 0.5;
     el.style.setProperty('--ry', `${px * 8}deg`);
     el.style.setProperty('--rx', `${-py * 8}deg`);
     el.style.setProperty('--spot-x', `${px * 60 + 50}%`);
     el.style.setProperty('--spot-y', `${py * 60 + 50}%`);
+    el.style.setProperty('--spot-opacity', '1'); // <- show while hovering
   }
+
   resetTilt(ev: MouseEvent) {
     const el = ev.currentTarget as HTMLElement;
     el.style.setProperty('--ry', '0deg');
     el.style.setProperty('--rx', '0deg');
+    el.style.setProperty('--spot-opacity', '0'); // <- hide when mouse leaves
+    // (optional) center it so we don't see a jump on next enter before move:
+    el.style.setProperty('--spot-x', '50%');
+    el.style.setProperty('--spot-y', '50%');
   }
+
 
   magnetic(ev: MouseEvent) {
     const el = ev.currentTarget as HTMLElement;
@@ -192,7 +194,7 @@ export class AppComponent implements AfterViewInit {
   runCommand(cmd: Command) { this.closePalette(); cmd.fn(); }
   triggerCV() {
     const link = document.createElement('a');
-    link.href = 'assets/Jonathan_Doe_CV.pdf';
+    link.href = this.ui.hero.cvPath;
     link.download = '';
     link.click();
     this.confetti();
@@ -224,64 +226,58 @@ export class AppComponent implements AfterViewInit {
     }
   }
 
-confetti(_?: any) {
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  confetti(_?: any) {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const c = document.createElement('canvas');
+    Object.assign(c.style, { position: 'fixed', inset: '0', zIndex: '90', pointerEvents: 'none' } as CSSStyleDeclaration);
+    document.body.appendChild(c);
 
-  // Ephemeral overlay canvas (no conflict with lava lamp)
-  const c = document.createElement('canvas');
-  Object.assign(c.style, {
-    position: 'fixed', inset: '0', zIndex: '90', pointerEvents: 'none'
-  } as CSSStyleDeclaration);
-  document.body.appendChild(c);
+    const ctx = c.getContext('2d')!;
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const resize = () => {
+      c.width = Math.ceil(innerWidth * dpr);
+      c.height = Math.ceil(innerHeight * dpr);
+      c.style.width = innerWidth + 'px';
+      c.style.height = innerHeight + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    resize();
+    const onResize = () => resize();
+    addEventListener('resize', onResize, { passive: true });
 
-  const ctx = c.getContext('2d')!;
-  const dpr = Math.min(2, window.devicePixelRatio || 1);
-  const resize = () => {
-    c.width = Math.ceil(innerWidth * dpr);
-    c.height = Math.ceil(innerHeight * dpr);
-    c.style.width = innerWidth + 'px';
-    c.style.height = innerHeight + 'px';
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  };
-  resize();
-  const onResize = () => resize();
-  addEventListener('resize', onResize, { passive: true });
+    type P = { x:number; y:number; vx:number; vy:number; size:number; color:string; life:number; };
+    const parts: P[] = [];
+    const make = (): P => {
+      const a = Math.random() * Math.PI * 2, s = 2 + Math.random() * 4;
+      return { x: innerWidth/2, y: innerHeight*0.25, vx: Math.cos(a)*s, vy: Math.sin(a)*s-2,
+               size: 3 + Math.random()*5, color: `hsl(${Math.random()*360},80%,60%)`, life: 120 };
+    };
+    for (let i=0;i<140;i++) parts.push(make());
 
-  type P = { x:number; y:number; vx:number; vy:number; size:number; color:string; life:number; };
-  const parts: P[] = [];
-  const make = (): P => {
-    const a = Math.random() * Math.PI * 2, s = 2 + Math.random() * 4;
-    return { x: innerWidth/2, y: innerHeight*0.25, vx: Math.cos(a)*s, vy: Math.sin(a)*s-2,
-             size: 3 + Math.random()*5, color: `hsl(${Math.random()*360},80%,60%)`, life: 120 };
-  };
-  for (let i=0;i<140;i++) parts.push(make());
+    let raf = 0;
+    const loop = () => {
+      ctx.clearRect(0, 0, innerWidth, innerHeight);
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.fillStyle = 'rgba(255,255,255,.05)';
+      for (let i=0;i<24;i++) ctx.fillRect(Math.random()*innerWidth, Math.random()*innerHeight, 1, 1);
+      ctx.globalCompositeOperation = 'source-over';
 
-  let raf = 0;
-  const loop = () => {
-    ctx.clearRect(0, 0, innerWidth, innerHeight);
-    ctx.globalCompositeOperation = 'lighter';
-    ctx.fillStyle = 'rgba(255,255,255,.05)';
-    for (let i=0;i<24;i++) ctx.fillRect(Math.random()*innerWidth, Math.random()*innerHeight, 1, 1);
-    ctx.globalCompositeOperation = 'source-over';
+      for (let i=parts.length-1;i>=0;i--) {
+        const p = parts[i];
+        p.vy += 0.05; p.x += p.vx; p.y += p.vy; p.life--;
+        ctx.fillStyle = p.color; ctx.fillRect(p.x, p.y, p.size, p.size);
+        if (p.life <= 0) parts.splice(i, 1);
+      }
 
-    for (let i=parts.length-1;i>=0;i--) {
-      const p = parts[i];
-      p.vy += 0.05; p.x += p.vx; p.y += p.vy; p.life--;
-      ctx.fillStyle = p.color; ctx.fillRect(p.x, p.y, p.size, p.size);
-      if (p.life <= 0) parts.splice(i, 1);
-    }
-
-    if (parts.length) raf = requestAnimationFrame(loop);
-    else {
-      cancelAnimationFrame(raf);
-      removeEventListener('resize', onResize);
-      c.remove();
-    }
-  };
-  raf = requestAnimationFrame(loop);
-}
-
-
+      if (parts.length) raf = requestAnimationFrame(loop);
+      else {
+        cancelAnimationFrame(raf);
+        removeEventListener('resize', onResize);
+        c.remove();
+      }
+    };
+    raf = requestAnimationFrame(loop);
+  }
 
   /* ---------- SCROLL ---------- */
   @HostListener('window:scroll')
@@ -311,7 +307,6 @@ confetti(_?: any) {
     this.onScroll();
     this.initRevealObserver();
   }
-
 
   /* ---------- Reveal-on-scroll ---------- */
   initRevealObserver() {

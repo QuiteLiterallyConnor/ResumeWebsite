@@ -1,20 +1,26 @@
-<app-background></app-background>
+<ng-container [ngSwitch]="theme">
+  <app-bg-dark *ngSwitchCase="'dark'"></app-bg-dark>
+  <app-bg-light *ngSwitchCase="'light'"></app-bg-light>
+  <app-bg-lava *ngSwitchCase="'lava'"></app-bg-lava>
+  <app-bg-constellation *ngSwitchCase="'constellation'"></app-bg-constellation>
+</ng-container>
 
 <!-- Sticky dots nav (matches header's sections only) -->
-<nav class="dots-nav" aria-label="Section navigation">
-  <a [class.active]="activeSection==='about'"        (click)="scrollTo('#about')"        aria-label="About"></a>
-  <a [class.active]="activeSection==='experience'"   (click)="scrollTo('#experience')"   aria-label="Experience"></a>
-  <a [class.active]="activeSection==='projects'"     (click)="scrollTo('#projects')"     aria-label="Projects"></a>
-  <a [class.active]="activeSection==='testimonials'" (click)="scrollTo('#testimonials')" aria-label="Testimonials"></a>
+<nav class="dots-nav" [attr.aria-label]="ui.nav.dotsAria">
+  <a [class.active]="activeSection==='about'"        (click)="scrollTo('#about')"        [attr.aria-label]="ui.nav.about"></a>
+  <a [class.active]="activeSection==='experience'"   (click)="scrollTo('#experience')"   [attr.aria-label]="ui.nav.experience"></a>
+  <a [class.active]="activeSection==='projects'"     (click)="scrollTo('#projects')"     [attr.aria-label]="ui.nav.projects"></a>
+  <a [class.active]="activeSection==='testimonials'" (click)="scrollTo('#testimonials')" [attr.aria-label]="ui.nav.testimonials"></a>
 </nav>
 
 <!-- Back to top -->
-<button class="to-top" (click)="scrollTo('body')" aria-label="Back to top">↑</button>
+<button class="to-top" (click)="scrollTo('body')" [attr.aria-label]="ui.nav.backToTop">↑</button>
 
-<div class="container">
+<div class="container sticky-container">
   <app-header
     [activeSection]="activeSection"
-    (setTheme)="setTheme($event)"
+    [currentTheme]="theme"
+    (setTheme)="onTheme($event)"
     (toggleTheme)="toggleTheme()"
     (openPalette)="openPalette()"
     (navigate)="scrollTo($event)">
@@ -31,25 +37,27 @@
       <!-- Hero -->
       <section class="glass hero reveal" id="about" aria-label="About me">
         <div class="hero-content">
-          <div class="badge pulse">Web Developer</div>
+          <div class="badge pulse">{{ me.title }}</div>
+          <br>
+          <br>
           <h1>
-            <span class="hi">Hi, I’m</span>
-            <span class="name gradient-text">Connor Hogan</span>
+            <span class="hi">{{ ui.hero.hi }}</span>
+            <span class="name gradient-text">{{ me.name }}</span>
           </h1>
-          <p class="subtitle">I build crisp, fast, delightful web experiences.</p>
+          <p class="subtitle">{{ ui.hero.subtitle }}</p>
 
           <div class="ctas">
             <a class="btn btn-primary magnetic"
                (mousemove)="magnetic($event)" (mouseleave)="unmagnetic($event)"
-               href="assets/Jonathan_Doe_CV.pdf" (click)="confetti($event)" download
-               aria-label="Download CV">
-              <span>Download CV</span>
+               [href]="ui.hero.cvPath" (click)="confetti($event)" download
+               [attr.aria-label]="ui.hero.ctas.download">
+              <span>{{ ui.hero.ctas.download }}</span>
               <span class="ripple" (mousedown)="ripple($event)"></span>
             </a>
             <a class="btn btn-ghost magnetic"
                (mousemove)="magnetic($event)" (mouseleave)="unmagnetic($event)"
-               href="#contact" aria-label="Contact">
-              Contact
+               href="#contact" [attr.aria-label]="ui.hero.ctas.contact">
+              {{ ui.hero.ctas.contact }}
               <span class="ripple" (mousedown)="ripple($event)"></span>
             </a>
           </div>
@@ -65,10 +73,8 @@
 
       <!-- About -->
       <section class="glass section about reveal" aria-label="About details">
-        <h2>About Me</h2>
-        <p class="lead">
-          I specialize in building robust front-ends with a focus on accessibility, performance, and subtle, tasteful motion.
-        </p>
+        <h2>{{ ui.about.heading }}</h2>
+        <p class="lead">{{ ui.about.lead }}</p>
         <div class="chips">
           <button class="chip" *ngFor="let s of me.skills">{{ s }}</button>
         </div>
@@ -76,7 +82,7 @@
 
       <!-- Experience -->
       <section id="experience" class="glass section reveal" aria-label="Experience timeline">
-        <h2>Experience</h2>
+        <h2>{{ ui.experience.heading }}</h2>
         <div class="timeline">
           <article class="step tilt-card"
                   *ngFor="let e of experience; let i = index"
@@ -89,7 +95,6 @@
               </div>
               <div class="meta">
                 <span class="badge">{{ e.year }}</span>
-                <button class="btn icon caret" [class.open]="openStep===i" aria-label="Expand"></button>
               </div>
             </header>
             <div class="content" [class.open]="openStep===i" [attr.aria-hidden]="openStep===i ? 'false':'true'">
@@ -101,12 +106,12 @@
 
       <!-- Projects -->
       <section id="projects" class="glass section reveal" aria-label="Projects">
-        <h2>Projects</h2>
+        <h2>{{ ui.projects.heading }}</h2>
 
         <!-- Carousel -->
         <div class="projects-track" #projectsTrack role="listbox"
             (mousedown)="startDrag($event)" (mousemove)="onDrag($event)" (mouseleave)="endDrag()"
-            (mouseup)="endDrag()" (wheel)="wheelScroll($event)" aria-label="Projects carousel">
+            (mouseup)="endDrag()" (wheel)="wheelScroll($event)" [attr.aria-label]="ui.projects.ariaCarousel">
           <article class="project tilt-card"
                   *ngFor="let p of projects" (mousemove)="tilt($event)" (mouseleave)="resetTilt($event)">
             <div class="project-head">
@@ -116,64 +121,55 @@
               </div>
             </div>
             <p>{{ p.desc }}</p>
-            <a [href]="p.link" class="link"
-               [attr.aria-label]="'Read more about ' + p.title">Read More →</a>
+              <a [href]="p.link" class="link"
+                target="_blank" rel="noopener noreferrer"
+                [attr.aria-label]="'Read more about ' + p.title">
+                {{ ui.projects.readMoreText }}
+              </a>
           </article>
-          <!-- removed ghost duplicates to prevent excessive scroll width -->
         </div>
       </section>
 
       <!-- Testimonials -->
-      <section id="testimonials" class="glass section reveal" aria-label="Testimonials">
-        <h2>Testimonials</h2>
+      <!-- <section id="testimonials" class="glass section reveal" aria-label="Testimonials">
+        <h2>{{ ui.testimonials.heading }}</h2>
         <div class="quotes">
-          <figure class="quote tilt-card" (mousemove)="tilt($event)" (mouseleave)="resetTilt($event)">
-            <blockquote>Connor delivered a pristine UI and shipped on time. Our KPIs improved across the board.</blockquote>
-            <figcaption>— Product Lead, Company ABC</figcaption>
-          </figure>
-          <figure class="quote tilt-card" (mousemove)="tilt($event)" (mouseleave)="resetTilt($event)">
-            <blockquote>Exceptionally thoughtful about performance and accessibility. A joy to collaborate with.</blockquote>
-            <figcaption>— Eng Manager, Company XYZ</figcaption>
+          <figure class="quote tilt-card" *ngFor="let q of testimonials"
+                  (mousemove)="tilt($event)" (mouseleave)="resetTilt($event)">
+            <blockquote>{{ q.quote }}</blockquote>
+            <figcaption>— {{ q.by }}</figcaption>
           </figure>
         </div>
-      </section>
+      </section> -->
 
       <!-- Contact (kept on page; not tracked by header) -->
       <section id="contact" class="glass section reveal" aria-label="Contact">
-        <h2>Contact</h2>
+        <h2>{{ ui.contact.heading }}</h2>
         <div class="contact-grid">
           <div>
-            <p>Let’s build something great together.</p>
+            <p>{{ ui.contact.lead }}</p>
             <div class="contact-actions">
-              <button class="btn" (click)="copy(me.email, $event)" aria-label="Copy email">
+              <button class="btn" (click)="copy(me.email, $event)" [attr.aria-label]="ui.contact.actions.copyEmailAria">
                 {{ me.email }}
                 <span class="ripple" (mousedown)="ripple($event)"></span>
               </button>
-              <button class="btn" (click)="copy(me.phone, $event)" aria-label="Copy phone">
-                {{ me.phone }}
-                <span class="ripple" (mousedown)="ripple($event)"></span>
-              </button>
-              <a class="btn btn-primary" [href]="'mailto:' + me.email" aria-label="Open mail client">
-                Email Me
-                <span class="ripple" (mousedown)="ripple($event)"></span>
-              </a>
             </div>
           </div>
           <form class="contact-form" action="#" method="post" aria-label="Quick message" (submit)="$event.preventDefault()">
             <label>
-              <span>Name</span>
-              <input type="text" required placeholder="Your name">
+              <span>{{ ui.contact.form.name }}</span>
+              <input type="text" required [placeholder]="ui.contact.form.placeholderName">
             </label>
             <label>
-              <span>Email</span>
-              <input type="email" required placeholder="you@example.com">
+              <span>{{ ui.contact.form.email }}</span>
+              <input type="email" required [placeholder]="ui.contact.form.placeholderEmail">
             </label>
             <label class="full">
-              <span>Message</span>
-              <textarea rows="4" required placeholder="What can I do for you?"></textarea>
+              <span>{{ ui.contact.form.message }}</span>
+              <textarea rows="4" required [placeholder]="ui.contact.form.placeholderMsg"></textarea>
             </label>
             <button class="btn btn-primary" type="submit">
-              Send
+              {{ ui.contact.form.submit }}
               <span class="ripple" (mousedown)="ripple($event)"></span>
             </button>
           </form>
@@ -181,7 +177,7 @@
       </section>
 
       <footer class="footer">
-        <p>© {{year}} Connor Hogan — All rights reserved.</p>
+        <p>© {{year}} {{ ui.footer.copyrightHolder }} — {{ ui.footer.rights }}</p>
       </footer>
     </main>
   </div>
@@ -190,7 +186,7 @@
 <!-- Command Palette -->
 <div class="palette-backdrop" [class.open]="paletteOpen" (click)="closePalette()"></div>
 <div class="palette" [class.open]="paletteOpen" role="dialog" aria-modal="true" aria-label="Command palette">
-  <input #paletteInput type="text" class="palette-input" placeholder="Type a command or search…"
+  <input #paletteInput type="text" class="palette-input" [placeholder]="ui.palette.placeholder"
          [(ngModel)]="paletteQuery" (keydown)="paletteKey($event)">
   <ul class="palette-list">
     <li *ngFor="let cmd of filteredCommands(); let i = index"
@@ -201,5 +197,5 @@
       <span class="h">{{cmd.h}}</span>
     </li>
   </ul>
-  <div class="palette-hint">Press Esc to close • ↑↓ to navigate • Enter to run</div>
+  <div class="palette-hint">{{ ui.palette.hint }}</div>
 </div>

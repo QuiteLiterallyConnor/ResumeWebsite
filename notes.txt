@@ -1,0 +1,3 @@
+in Resume_Website, run "ng build --configuration production"
+copy Resume_Website/dist/browser into static
+run main.py
