@@ -1,3 +1,14 @@
-in Resume_Website, run "ng build --configuration production"
-copy Resume_Website/dist/Resume_Website/browser into static
-run main.py
+git pull
+
+docker rm -f resume_website
+docker rm -f resume_website_tunnel
+
+docker build -t resume-site .
+
+docker run -d \
+  --name resume_website \
+  -p 9080:9080 \
+  -e DISCORD_WEBHOOK="insert_webhook_here" \
+  resume-site
+
+docker compose up -d
