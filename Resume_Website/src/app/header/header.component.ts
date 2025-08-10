@@ -26,8 +26,8 @@ export class HeaderComponent implements AfterViewInit, OnChanges {
   navInkTransform = 'translateX(0)';
   scrollProgress = 0; // 0..1
 
-  // Default to current effect (Lava Lamp). Change if you prefer a different default.
-  @Input() currentTheme: Theme = 'lava';
+  // Default to dark theme
+  @Input() currentTheme: Theme = 'dark';
 
   ngAfterViewInit() {
     this.positionInkToActive();

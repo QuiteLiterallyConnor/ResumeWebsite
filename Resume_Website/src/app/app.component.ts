@@ -33,7 +33,7 @@ export class AppComponent implements AfterViewInit {
   year = new Date().getFullYear();
   openStep: number | null = 0;
   activeSection: HeaderSection = 'about';
-  theme: Theme = 'lava';
+  theme: Theme = 'dark';
 
   // data from provider
   me!: Me;
@@ -104,7 +104,7 @@ export class AppComponent implements AfterViewInit {
   }
   initTheme() {
     const stored = localStorage.getItem('themeName') as Theme | null;
-    this.theme = stored ?? 'lava';
+    this.theme = stored ?? 'dark';
     this.updateThemeClass();
   }
   updateThemeClass() {
