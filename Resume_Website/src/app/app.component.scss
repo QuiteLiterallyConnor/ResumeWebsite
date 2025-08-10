@@ -136,6 +136,7 @@ body, html { background: var(--bg); color: var(--ink); }
   transform: translate(-50%,-50%) scale(0); opacity: .6; left: var(--x); top: var(--y);
 }
 .btn.rippling .ripple::after { animation: ripple .6s ease-out; }
+@-webkit-keyframes ripple { to { -webkit-transform: translate(-50%,-50%) scale(12); transform: translate(-50%,-50%) scale(12); opacity: 0; } }
 @keyframes ripple { to { transform: translate(-50%,-50%) scale(12); opacity: 0; } }
 
 /* Dots nav & back-to-top */
@@ -162,6 +163,7 @@ html.show-top .to-top { opacity: 1; pointer-events: auto; transform: none; }
 .badge { display: inline-block; padding: 6px 10px; font-size: 12px; color: var(--muted);
   border: 1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.05); border-radius: 999px; }
 .badge.pulse { animation: pulse 2.2s ease-in-out infinite; }
+@-webkit-keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(78,164,255,0);} 50%{box-shadow:0 0 0 12px rgba(78,164,255,.12);} }
 @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(78,164,255,0);} 50%{box-shadow:0 0 0 12px rgba(78,164,255,.12);} }
 .hi { display: block; font-weight: 700; font-size: clamp(22px, 3.2vw, 28px); color: var(--muted); }
 .name { display: block; font-weight: 800; font-size: clamp(40px, 6vw, 64px); letter-spacing: -.02em; }
@@ -178,6 +180,7 @@ html.show-top .to-top { opacity: 1; pointer-events: auto; transform: none; }
 .marquee { margin-top: 22px; overflow: hidden; mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
 .marquee .track { display: flex; gap: 28px; animation: marquee 60s linear infinite; }
 .marquee span { opacity: .75; }
+@-webkit-keyframes marquee { from { -webkit-transform: translateX(0); transform: translateX(0); } to { -webkit-transform: translateX(-50%); transform: translateX(-50%); } }
 @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
 /* Sections */
@@ -220,6 +223,8 @@ html.show-top .to-top { opacity: 1; pointer-events: auto; transform: none; }
   cursor: grab; 
   scrollbar-width: none; /* Hide scrollbar for Firefox */
   -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
+  -ms-overflow-style: none; /* Hide scrollbar in Edge */
+  overscroll-behavior-x: contain; /* Improve momentum scrolling in Chrome/Edge */
 }
 .projects-track::-webkit-scrollbar { 
   display: none; /* Hide scrollbar for Chrome/Safari/Edge */
