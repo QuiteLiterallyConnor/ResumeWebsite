@@ -62,7 +62,6 @@ export class AppComponent implements AfterViewInit {
     { k:'Go',     t:'About',           h:'Navigate to about',        fn: () => this.scrollTo('#about') },
     { k:'Go',     t:'Experience',      h:'Navigate to experience',    fn: () => this.scrollTo('#experience') },
     { k:'Go',     t:'Projects',        h:'Navigate to projects',      fn: () => this.scrollTo('#projects') },
-    { k:'Go',     t:'Testimonials',    h:'Navigate to testimonials',  fn: () => this.scrollTo('#testimonials') },
     { k:'Toggle', t:'Theme',           h:'Cycle theme',               fn: () => this.toggleTheme() },
     { k:'Toggle', t:'Backdrop',        h:'Stars / glows on/off',      fn: () => this.toggleBackdrop() },
     { k:'Action', t:'Download Resume', h:'Grab a copy of my CV',      fn: () => this.triggerCV() },
