@@ -25,6 +25,8 @@ html.is-scrolled .header.sticky { height: var(--hdr-h-scrolled); }
 
 /* Frosted glass shell */
 .glass {
+  -webkit-backdrop-filter: blur(12px) saturate(110%);
+  backdrop-filter: blur(12px) saturate(110%);
   background:
     linear-gradient(180deg, var(--card) 0%, var(--card-2) 100%),
     linear-gradient(0deg, rgba(255,255,255,.06), rgba(255,255,255,0));
