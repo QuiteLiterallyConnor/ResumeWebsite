@@ -5,7 +5,7 @@
   <app-bg-constellation *ngSwitchCase="'constellation'"></app-bg-constellation>
 </ng-container>
 
-<!-- Sticky dots nav (matches header's sections only) -->
+<!-- Sticky dots nav -->
 <nav class="dots-nav" [attr.aria-label]="ui.nav.dotsAria">
   <a [class.active]="activeSection==='about'"        (click)="scrollTo('#about')"        [attr.aria-label]="ui.nav.about"></a>
   <a [class.active]="activeSection==='experience'"   (click)="scrollTo('#experience')"   [attr.aria-label]="ui.nav.experience"></a>
@@ -32,14 +32,13 @@
 <!-- Page content -->
 <div class="container">
   <div class="page">
-
     <main class="main">
+      
       <!-- Hero -->
       <section class="glass hero reveal" id="about" aria-label="About me">
         <div class="hero-content">
           <div class="badge pulse">{{ me.title }}</div>
-          <br>
-          <br>
+          <br><br>
           <h1>
             <span class="hi">{{ ui.hero.hi }}</span>
             <span class="name gradient-text">{{ me.name }}</span>
@@ -107,8 +106,6 @@
       <!-- Projects -->
       <section id="projects" class="glass section reveal" aria-label="Projects">
         <h2>{{ ui.projects.heading }}</h2>
-
-        <!-- Carousel -->
         <div class="projects-track" #projectsTrack role="listbox"
             (mousedown)="startDrag($event)" (mousemove)="onDrag($event)" (mouseleave)="endDrag()"
             (mouseup)="endDrag()" (wheel)="wheelScroll($event)" 
@@ -123,18 +120,57 @@
               </div>
             </div>
             <p>{{ p.desc }}</p>
-              <a [href]="p.link" class="link"
-                target="_blank" rel="noopener noreferrer"
-                [attr.aria-label]="'Read more about ' + p.title">
-                {{ ui.projects.readMoreText }}
-              </a>
+            <a [href]="p.link" class="link"
+               target="_blank" rel="noopener noreferrer"
+               [attr.aria-label]="'Read more about ' + p.title">
+              {{ ui.projects.readMoreText }}
+            </a>
           </article>
         </div>
       </section>
 
-      <!-- Testimonials (optional) -->
-      <!--
-      <section id="testimonials" class="glass section reveal" aria-label="Testimonials">
+      <!-- Portfolio (carousel) -->
+      <section id="portfolio" class="glass section reveal" aria-label="Portfolio work">
+        <h2>Portfolio</h2>
+
+        <div class="portfolio-track" #portfolioTrack role="listbox"
+            (mousedown)="startDragPortfolio($event)"
+            (mousemove)="onDragPortfolio($event)"
+            (mouseleave)="endDragPortfolio()"
+            (mouseup)="endDragPortfolio()"
+            (wheel)="wheelScrollPortfolio($event)"
+            (touchstart)="startTouchPortfolio($event)"
+            (touchmove)="onTouchPortfolio($event)"
+            (touchend)="endTouchPortfolio()"
+            aria-label="Portfolio carousel">
+
+          <article class="portfolio-card tilt-card"
+                  *ngFor="let v of portfolio"
+                  (mousemove)="tilt($event)" (mouseleave)="resetTilt($event)">
+            <a class="thumb" [href]="v.videoLink || '#'" target="_blank" rel="noopener noreferrer"
+              [attr.aria-label]="'Open video: ' + v.videoName">
+              <img [src]="v.gifs[0]?.file"
+                  [alt]="v.videoName + ' preview'"
+                  loading="lazy" />
+            </a>
+
+            <div class="portfolio-meta">
+              <h3 class="title">
+                <a [href]="v.videoLink || '#'" target="_blank" rel="noopener noreferrer">{{ v.videoName }}</a>
+              </h3>
+              <div class="sub">
+                <a class="client" [href]="v.clientLink || '#'" target="_blank" rel="noopener noreferrer">{{ v.clientName }}</a>
+                <span class="sep">•</span>
+                <span class="views">{{ v.viewCount }}</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+
+      <!-- Testimonials -->
+      <section id="testimonials" *ngIf="testimonials.length > 0" class="glass section reveal" aria-label="Testimonials">
         <h2>{{ ui.testimonials.heading }}</h2>
         <div class="quotes">
           <figure class="quote tilt-card" *ngFor="let q of testimonials"
@@ -144,9 +180,8 @@
           </figure>
         </div>
       </section>
-      -->
 
-      <!-- Contact (kept on page; not tracked by header) -->
+      <!-- Contact -->
       <section id="contact" class="glass section reveal" aria-label="Contact">
         <h2>{{ ui.contact.heading }}</h2>
         <div class="contact-grid">
@@ -160,59 +195,45 @@
             </div>
           </div>
 
-          <!-- Contact form wired to POST /api/contact -->
           <form class="contact-form"
                 (ngSubmit)="submitContact()"
                 #contactForm="ngForm"
                 novalidate
                 aria-label="Quick message">
-
             <label>
               <span>{{ ui.contact.form.name }}</span>
-              <input type="text"
-                     required
-                     name="name"
+              <input type="text" required name="name"
                      [(ngModel)]="contact.name"
                      [placeholder]="ui.contact.form.placeholderName">
             </label>
-
             <label>
               <span>{{ ui.contact.form.email }}</span>
-              <input type="email"
-                     required
-                     name="email"
+              <input type="email" required name="email"
                      [(ngModel)]="contact.email"
                      [placeholder]="ui.contact.form.placeholderEmail">
             </label>
-
             <label class="full">
               <span>{{ ui.contact.form.message }}</span>
-              <textarea rows="4"
-                        required
-                        name="message"
+              <textarea rows="4" required name="message"
                         [(ngModel)]="contact.message"
                         [placeholder]="ui.contact.form.placeholderMsg"></textarea>
             </label>
-
-            <button class="btn btn-primary"
-                    type="submit"
-                    [disabled]="contactLoading || !contactForm.form.valid">
+            <button class="btn btn-primary" type="submit" [disabled]="contactLoading || !contactForm.form.valid">
               <ng-container *ngIf="!contactLoading; else sending">
                 {{ ui.contact.form.submit }}
               </ng-container>
               <ng-template #sending>Sending…</ng-template>
               <span class="ripple" (mousedown)="ripple($event)"></span>
             </button>
-
-            <!-- lightweight feedback -->
             <p class="form-msg success" *ngIf="contactSuccess">Thanks! Your message was sent.</p>
             <p class="form-msg error" *ngIf="contactError">{{ contactError }}</p>
           </form>
         </div>
       </section>
 
+      <!-- Footer -->
       <footer class="footer">
-        <p>© {{year}} {{ ui.footer.copyrightHolder }} — {{ ui.footer.rights }}</p>
+        <p>© {{ year }} {{ ui.footer.copyrightHolder }} — {{ ui.footer.rights }}</p>
       </footer>
     </main>
   </div>
@@ -227,9 +248,9 @@
     <li *ngFor="let cmd of filteredCommands(); let i = index"
         [class.active]="i===paletteIndex"
         (click)="runCommand(cmd)">
-      <span class="k">{{cmd.k}}</span>
-      <span class="t">{{cmd.t}}</span>
-      <span class="h">{{cmd.h}}</span>
+      <span class="k">{{ cmd.k }}</span>
+      <span class="t">{{ cmd.t }}</span>
+      <span class="h">{{ cmd.h }}</span>
     </li>
   </ul>
   <div class="palette-hint">{{ ui.palette.hint }}</div>

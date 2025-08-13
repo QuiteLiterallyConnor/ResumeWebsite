@@ -7,7 +7,7 @@ import { BgDarkComponent } from './backgrounds/bg-dark/bg-dark.component';
 import { BgLightComponent } from './backgrounds/bg-light/bg-light.component';
 import { BgLavaComponent } from './backgrounds/bg-lava/bg-lava.component';
 import { BgConstellationComponent } from './backgrounds/bg-constellation/bg-constellation.component';
-import { DataComponent, Me, ExperienceItem, ProjectItem, TestimonialItem, UIStrings } from './data/data.component';
+import { DataComponent, Me, ExperienceItem, ProjectItem, TestimonialItem, UIStrings, PortfolioItem } from './data/data.component';
 
 type HeaderSection = 'about'|'experience'|'projects'|'testimonials';
 type Command = { k: string; t: string; h: string; fn: () => void };
@@ -42,6 +42,7 @@ export class AppComponent implements AfterViewInit {
   testimonials!: TestimonialItem[];
   marqueeSkills!: string[];
   ui!: UIStrings;
+  portfolio!: PortfolioItem[];
 
   @ViewChild('projectsTrack') projectsTrack?: ElementRef<HTMLDivElement>;
   @ViewChild('paletteInput') paletteInput?: ElementRef<HTMLInputElement>;
@@ -60,12 +61,12 @@ export class AppComponent implements AfterViewInit {
 
   commands: Command[] = [
     { k:'Go',     t:'About',           h:'Navigate to about',        fn: () => this.scrollTo('#about') },
-    { k:'Go',     t:'Experience',      h:'Navigate to experience',    fn: () => this.scrollTo('#experience') },
-    { k:'Go',     t:'Projects',        h:'Navigate to projects',      fn: () => this.scrollTo('#projects') },
-    { k:'Toggle', t:'Theme',           h:'Cycle theme',               fn: () => this.toggleTheme() },
-    { k:'Toggle', t:'Backdrop',        h:'Stars / glows on/off',      fn: () => this.toggleBackdrop() },
-    { k:'Action', t:'Download Resume', h:'Grab a copy of my CV',      fn: () => this.triggerCV() },
-    { k:'Copy',   t:'Email',           h: '',                         fn: () => this.copy(this.me.email, new Event('copy')) },
+    { k:'Go',     t:'Experience',      h:'Navigate to experience',   fn: () => this.scrollTo('#experience') },
+    { k:'Go',     t:'Projects',        h:'Navigate to projects',     fn: () => this.scrollTo('#projects') },
+    { k:'Toggle', t:'Theme',           h:'Cycle theme',              fn: () => this.toggleTheme() },
+    { k:'Toggle', t:'Backdrop',        h:'Stars / glows on/off',     fn: () => this.toggleBackdrop() },
+    { k:'Action', t:'Download Resume', h:'Grab a copy of my CV',     fn: () => this.triggerCV() },
+    { k:'Copy',   t:'Email',           h: '',                        fn: () => this.copy(this.me.email, new Event('copy')) },
   ];
 
   constructor(
@@ -80,6 +81,7 @@ export class AppComponent implements AfterViewInit {
     this.testimonials = data.testimonials;
     this.marqueeSkills = data.marqueeSkills;
     this.ui = data.ui;
+    this.portfolio = data.portfolio;
 
     this.commands = this.commands.map(c => {
       if (c.t === 'Email') return { ...c, h: this.me.email };
@@ -155,68 +157,79 @@ export class AppComponent implements AfterViewInit {
     rip.style.setProperty('--y', `${y}px`);
     (rip as any).style.setProperty('left', x + 'px');
     (rip as any).style.setProperty('top', y + 'px');
-    btn.classList.remove('rippling'); void btn.offsetWidth; btn.classList.add('rippling');
+    btn.classList.remove('ippling'); void btn.offsetWidth; btn.classList.add('rippling');
     setTimeout(() => btn.classList.remove('rippling'), 600);
   }
 
   /* ---------- EXPERIENCE ---------- */
   toggleStep(i: number) { this.openStep = this.openStep === i ? null : i; }
 
-  /* ---------- CAROUSEL ---------- */
+  /* ---------- CAROUSEL (generalized for portfolio and projects) ---------- */
   dragging = false; dragStartX = 0; scrollStartX = 0; velX = 0; lastX = 0; raf?: number;
-  startDrag(e: MouseEvent | TouchEvent) {
-    this.dragging = true; 
+
+  private resolveTrack(el?: HTMLDivElement): HTMLDivElement | null {
+    if (el) return el;
+    return this.projectsTrack?.nativeElement || null;
+  }
+
+  startDrag(e: MouseEvent | TouchEvent, trackEl?: HTMLDivElement) {
+    const track = this.resolveTrack(trackEl);
+    if (!track) return;
+    this.dragging = true;
     this.dragStartX = e instanceof MouseEvent ? e.clientX : e.touches[0].clientX;
-    if (!this.projectsTrack) return;
-    this.scrollStartX = this.projectsTrack.nativeElement.scrollLeft;
+    this.scrollStartX = track.scrollLeft;
     this.lastX = this.dragStartX;
     cancelAnimationFrame(this.raf!);
   }
-  
-  onDrag(e: MouseEvent | TouchEvent) {
-    if (!this.dragging || !this.projectsTrack) return;
+
+  onDrag(e: MouseEvent | TouchEvent, trackEl?: HTMLDivElement) {
+    if (!this.dragging) return;
+    const track = this.resolveTrack(trackEl);
+    if (!track) return;
     const clientX = e instanceof MouseEvent ? e.clientX : e.touches[0].clientX;
     const dx = clientX - this.dragStartX;
-    const el = this.projectsTrack.nativeElement;
-    el.scrollLeft = this.scrollStartX - dx;
-    this.velX = clientX - this.lastX; 
+    track.scrollLeft = this.scrollStartX - dx;
+    this.velX = clientX - this.lastX;
     this.lastX = clientX;
   }
-  
-  endDrag() {
-    if (!this.dragging || !this.projectsTrack) return;
+
+  endDrag(trackEl?: HTMLDivElement) {
+    if (!this.dragging) return;
+    const track = this.resolveTrack(trackEl);
+    if (!track) { this.dragging = false; return; }
     this.dragging = false;
-    const el = this.projectsTrack.nativeElement;
     const momentum = () => {
-      el.scrollLeft -= this.velX;
+      track.scrollLeft -= this.velX;
       this.velX *= 0.95;
       if (Math.abs(this.velX) > 0.5) this.raf = requestAnimationFrame(momentum);
     };
     this.raf = requestAnimationFrame(momentum);
   }
-  
+
   // Touch event handlers
-  startTouch(e: TouchEvent) {
-    if (e.touches.length === 1) {
-      e.preventDefault(); // Prevent page scrolling while swiping carousel
-      this.startDrag(e);
-    }
-  }
-  
-  onTouch(e: TouchEvent) {
+  startTouch(e: TouchEvent, trackEl?: HTMLDivElement) {
     if (e.touches.length === 1) {
       e.preventDefault();
-      this.onDrag(e);
+      this.startDrag(e, trackEl);
     }
   }
-  
-  endTouch() {
-    this.endDrag();
+
+  onTouch(e: TouchEvent, trackEl?: HTMLDivElement) {
+    if (e.touches.length === 1) {
+      e.preventDefault();
+      this.onDrag(e, trackEl);
+    }
   }
-  wheelScroll(e: WheelEvent) {
-    if (!this.projectsTrack) return;
+
+  endTouch(trackEl?: HTMLDivElement) {
+    this.endDrag(trackEl);
+  }
+
+  wheelScroll(e: WheelEvent, trackEl?: HTMLDivElement) {
+    const track = this.resolveTrack(trackEl);
+    if (!track) return;
     e.preventDefault();
-    this.projectsTrack.nativeElement.scrollLeft += e.deltaY;
+    track.scrollLeft += e.deltaY;
   }
 
   /* ---------- COMMAND PALETTE ---------- */
@@ -236,7 +249,6 @@ export class AppComponent implements AfterViewInit {
   runCommand(cmd: Command) { this.closePalette(); cmd.fn(); }
   triggerCV() {
     const link = document.createElement('a');
-    // Remove 'public/' prefix if present, as Angular serves these files from root
     const path = this.ui.hero.cvPath.replace(/^public\//, '/');
     link.href = path;
     link.download = this.ui.hero.cvPath.split('/').pop() || '';
@@ -262,11 +274,19 @@ export class AppComponent implements AfterViewInit {
     const k = e.key.toLowerCase();
     if ((e.metaKey || e.ctrlKey) && k === 'k') { e.preventDefault(); this.openPalette(); return; }
     if (e.key === 'Escape' && this.paletteOpen) { this.closePalette(); return; }
-    if (!this.projectsTrack) return;
-    if (['ArrowLeft','ArrowRight'].includes(e.key) && this.isInViewport(this.projectsTrack.nativeElement)) {
+
+    const tracks: HTMLDivElement[] = [];
+    const portfolioEl = document.querySelector('.portfolio-track') as HTMLDivElement | null;
+    if (portfolioEl) tracks.push(portfolioEl);
+    if (this.projectsTrack?.nativeElement) tracks.push(this.projectsTrack.nativeElement);
+
+    const target = tracks.find(t => this.isInViewport(t));
+    if (!target) return;
+
+    if (['ArrowLeft','ArrowRight'].includes(e.key)) {
       e.preventDefault();
       const delta = e.key === 'ArrowRight' ? 320 : -320;
-      this.projectsTrack.nativeElement.scrollBy({ left: delta, behavior: 'smooth' });
+      target.scrollBy({ left: delta, behavior: 'smooth' });
     }
   }
 
@@ -379,7 +399,6 @@ export class AppComponent implements AfterViewInit {
       return;
     }
 
-    // Validate email format
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(this.contact.email)) {
       this.contactError = 'Please enter a valid email address.';
@@ -405,4 +424,44 @@ export class AppComponent implements AfterViewInit {
       this.contactLoading = false;
     });
   }
+  // 1) Grab the portfolio track
+  @ViewChild('portfolioTrack') portfolioTrack?: ElementRef<HTMLDivElement>;
+
+  // 2) Wrapper helpers that forward to your existing generic carousel logic
+  startDragPortfolio(e: MouseEvent | TouchEvent) {
+    const el = this.portfolioTrack?.nativeElement;
+    if (!el) return;
+    this.startDrag(e, el);
+  }
+  onDragPortfolio(e: MouseEvent | TouchEvent) {
+    const el = this.portfolioTrack?.nativeElement;
+    if (!el) return;
+    this.onDrag(e, el);
+  }
+  endDragPortfolio() {
+    const el = this.portfolioTrack?.nativeElement;
+    if (!el) return;
+    this.endDrag(el);
+  }
+  wheelScrollPortfolio(e: WheelEvent) {
+    const el = this.portfolioTrack?.nativeElement;
+    if (!el) return;
+    this.wheelScroll(e, el);
+  }
+  startTouchPortfolio(e: TouchEvent) {
+    const el = this.portfolioTrack?.nativeElement;
+    if (!el) return;
+    this.startTouch(e, el);
+  }
+  onTouchPortfolio(e: TouchEvent) {
+    const el = this.portfolioTrack?.nativeElement;
+    if (!el) return;
+    this.onTouch(e, el);
+  }
+  endTouchPortfolio() {
+    const el = this.portfolioTrack?.nativeElement;
+    if (!el) return;
+    this.endTouch(el);
+  }
+
 }

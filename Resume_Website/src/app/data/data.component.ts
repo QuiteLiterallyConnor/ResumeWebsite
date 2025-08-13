@@ -25,6 +25,16 @@ export interface ProjectItem {
   tags: string[];
 }
 
+export interface PortfolioGif { file: string; link: string; }
+export interface PortfolioItem {
+  videoName: string;
+  videoLink: string;
+  clientName: string;
+  clientLink: string;
+  viewCount: string;
+  gifs: PortfolioGif[];
+}
+
 export interface TestimonialItem {
   quote: string;
   by: string;
@@ -74,32 +84,86 @@ export class DataComponent {
     skills: ['Go', 'Python', 'C++', 'C', 'HTML', 'JavaScript', 'CSS', 'TypeScript', 'SCSS', 'Angular', 'Chart.js', 'D3', 'A11y']
   };
 
-    readonly experience: ExperienceItem[] = [
+  readonly experience: ExperienceItem[] = [
     { 
-        year: 'October 2024 — Present', 
-        role: 'Software Engineer', 
-        company: 'NASA – Marshall Space Flight Center',
-        blurb: 'Maintain communication networking systems on the ISS program.'
+      year: 'October 2024 — Present', 
+      role: 'Software Engineer', 
+      company: 'NASA – Marshall Space Flight Center',
+      blurb: 'Maintain communication networking systems on the ISS program.'
     },
     { 
-        year: 'May 2023 — July 2023', 
-        role: 'Software Engineer', 
-        company: 'Lockheed Martin – Huntsville, AL',
-        blurb: 'Designed, developed, and integrated THAAD Fire Control Software. Updated and maintained FPGA firmware.'
+      year: 'May 2023 — July 2023', 
+      role: 'Software Engineer', 
+      company: 'Lockheed Martin – Huntsville, AL',
+      blurb: 'Designed, developed, and integrated THAAD Fire Control Software. Updated and maintained FPGA firmware.'
     },
     { 
-        year: 'December 2021 — May 2023', 
-        role: 'Software Engineer', 
-        company: 'Northrop Grumman / Insight Global – Huntsville, AL',
-        blurb: 'Developed and modified algorithms and support tools in C/C++, Go, Python, Ada, and MATLAB in a secure environment. Planned and executed team projects, created work packages, prototypes, and customer demos, and analyzed algorithm performance, subsystems, and interfaces.'
+      year: 'December 2021 — May 2023', 
+      role: 'Software Engineer', 
+      company: 'Northrop Grumman / Insight Global – Huntsville, AL',
+      blurb: 'Developed and modified algorithms and support tools in C/C++, Go, Python, Ada, and MATLAB in a secure environment. Planned and executed team projects, created work packages, prototypes, and customer demos, and analyzed algorithm performance, subsystems, and interfaces.'
     },
     { 
-        year: 'December 2019 — December 2021', 
-        role: 'Mission Systems Engineer', 
-        company: 'US Air Force – Offutt AFB, NE',
-        blurb: 'Performed aircrew duties aboard the RC-135 reconnaissance platform. Operated, maintained, repaired, and tested airborne communications, electro-optical sensors, radar, computer, electronic protection (EP) systems, and electronic warfare (EW) systems.'
+      year: 'December 2019 — December 2021', 
+      role: 'Mission Systems Engineer', 
+      company: 'US Air Force – Offutt AFB, NE',
+      blurb: 'Performed aircrew duties aboard the RC-135 reconnaissance platform. Operated, maintained, repaired, and tested airborne communications, electro-optical sensors, radar, computer, electronic protection (EP) systems, and electronic warfare (EW) systems.'
     }
-    ];
+  ];
+
+  readonly portfolio: PortfolioItem[] = [
+    {
+      videoName: 'Hypixel Minecraft Server - Official Trailer (2022)',
+      videoLink: 'https://www.youtube.com/watch?v=bkWHyz1MmaQ',
+      clientName: 'Hypixel',
+      clientLink: 'https://www.youtube.com/@Hypixel',
+      viewCount: '435K views',
+      gifs: [{ file: 'https://i.imgur.com/Tll5YAp.gif', link: 'https://www.youtube.com/watch?v=bkWHyz1MmaQ' }]
+    },
+    {
+      videoName: "Lamborghini Vs World's Largest Shredder",
+      videoLink: 'https://www.youtube.com/watch?v=vBpQ1SlfVtU',
+      clientName: 'MrBeast',
+      clientLink: 'https://www.youtube.com/@MrBeast',
+      viewCount: '200M views',
+      gifs: [
+        { file: 'https://i.imgur.com/HV7IaLb.gif', link: 'https://www.youtube.com/watch?v=vBpQ1SlfVtU' },
+        { file: 'https://i.imgur.com/X03rnjJ.gif', link: 'https://www.youtube.com/watch?v=vBpQ1SlfVtU' }
+      ]
+    },
+    {
+      videoName: "Dog Money Is Back. We're Doomed.",
+      videoLink: 'https://youtu.be/L8ZZDkxV0Ws?si=Ph4Yjwdah_G2ejs4',
+      clientName: 'Atrioc',
+      clientLink: 'https://www.youtube.com/@atrioc',
+      viewCount: '418K views',
+      gifs: [{ file: 'https://i.imgur.com/g90gxgu.gif', link: 'https://youtu.be/L8ZZDkxV0Ws?si=Ph4Yjwdah_G2ejs4&t=220' }]
+    },
+    {
+      videoName: 'I Created A $1,500 HITMAN Challenge to Find The World\'s Best Player.',
+      videoLink: 'https://www.youtube.com/watch?v=1NzLGYRYHJo',
+      clientName: 'Atrioc',
+      clientLink: 'https://www.youtube.com/@atrioc',
+      viewCount: '2.6M views',
+      gifs: [{ file: 'https://i.imgur.com/25LaTGv.gif', link: 'https://www.youtube.com/watch?v=1NzLGYRYHJo' }]
+    },
+    {
+      videoName: "The Writer's Strike is Over. Who Won?",
+      videoLink: 'https://www.youtube.com/watch?v=-n9XC7f50vc',
+      clientName: 'Atrioc',
+      clientLink: 'https://www.youtube.com/watch?v=1NzLGYRYHJo',
+      viewCount: '330K views',
+      gifs: [{ file: 'https://i.imgur.com/sCmb6D2.gif', link: 'https://www.youtube.com/watch?v=-n9XC7f50vc' }]
+    },
+    {
+      videoName: 'Unnamed Sneakpeak',
+      videoLink: '',
+      clientName: 'Atrioc',
+      clientLink: '',
+      viewCount: '0 views',
+      gifs: [{ file: 'https://i.imgur.com/ELqCSW1.gif', link: '' }]
+    },
+  ];
 
   readonly projects: ProjectItem[] = [
     { 
@@ -134,16 +198,14 @@ export class DataComponent {
     }
   ];
 
-
   // Testimonials
   readonly testimonials: TestimonialItem[] = [
     // { quote: 'Connor delivered my product as expected quickly and professionally.', by: 'Client' },
   ];
 
-    readonly marqueeSkills: string[] = Array(12).fill([
+  readonly marqueeSkills: string[] = Array(12).fill([
     'Go', 'C', 'Python', 'HTML', 'JavaScript', 'CSS', 'TypeScript', 'SCSS', 'Angular', 'Chart.js', 'D3', 'A11y'
-    ]).flat();
-
+  ]).flat();
 
   // All other UI text
   readonly ui: UIStrings = {
