@@ -43,6 +43,12 @@ export class AppComponent implements AfterViewInit {
   marqueeSkills!: string[];
   ui!: UIStrings;
   portfolio!: PortfolioItem[];
+  
+  // Carousel navigation arrow visibility
+  showProjectsLeftArrow = false;
+  showProjectsRightArrow = true;
+  showPortfolioLeftArrow = false;
+  showPortfolioRightArrow = true;
 
   @ViewChild('projectsTrack') projectsTrack?: ElementRef<HTMLDivElement>;
   @ViewChild('paletteInput') paletteInput?: ElementRef<HTMLInputElement>;
@@ -375,6 +381,87 @@ export class AppComponent implements AfterViewInit {
     this.initTheme();
     this.onScroll();
     this.initRevealObserver();
+    
+    // Initialize arrow visibility
+    setTimeout(() => {
+      this.checkProjectsArrows();
+      this.checkPortfolioArrows();
+    }, 100);
+  }
+  
+  /* ---------- Carousel Navigation ---------- */
+  // Check if we're at the beginning or end of the projects track
+  checkProjectsArrows() {
+    if (!this.projectsTrack?.nativeElement) return;
+    
+    const track = this.projectsTrack.nativeElement;
+    this.showProjectsLeftArrow = track.scrollLeft > 0;
+    this.showProjectsRightArrow = track.scrollLeft < (track.scrollWidth - track.clientWidth - 10);
+  }
+  
+  // Check if we're at the beginning or end of the portfolio track
+  checkPortfolioArrows() {
+    if (!this.portfolioTrack?.nativeElement) return;
+    
+    const track = this.portfolioTrack.nativeElement;
+    this.showPortfolioLeftArrow = track.scrollLeft > 0;
+    this.showPortfolioRightArrow = track.scrollLeft < (track.scrollWidth - track.clientWidth - 10);
+  }
+  
+  // Scroll the projects track left
+  scrollProjectsLeft() {
+    if (!this.projectsTrack?.nativeElement) return;
+    
+    const track = this.projectsTrack.nativeElement;
+    const cardWidth = (track.querySelector('.project') as HTMLElement)?.offsetWidth || 340;
+    const scrollAmount = cardWidth + 16; // card width + gap
+    
+    track.scrollBy({
+      left: -scrollAmount,
+      behavior: 'smooth'
+    });
+  }
+  
+  // Scroll the projects track right
+  scrollProjectsRight() {
+    if (!this.projectsTrack?.nativeElement) return;
+    
+    const track = this.projectsTrack.nativeElement;
+    const cardWidth = (track.querySelector('.project') as HTMLElement)?.offsetWidth || 340;
+    const scrollAmount = cardWidth + 16; // card width + gap
+    
+    track.scrollBy({
+      left: scrollAmount,
+      behavior: 'smooth'
+    });
+  }
+  
+  // Scroll the portfolio track left
+  scrollPortfolioLeft() {
+    if (!this.portfolioTrack?.nativeElement) return;
+    
+    const track = this.portfolioTrack.nativeElement;
+    const cardWidth = (track.querySelector('.portfolio-card') as HTMLElement)?.offsetWidth || 420;
+    const scrollAmount = cardWidth + 16; // card width + gap
+    
+    track.scrollBy({
+      left: -scrollAmount,
+      behavior: 'smooth'
+    });
+  }
+  
+  // Scroll the portfolio track right
+  scrollPortfolioRight() {
+    if (!this.portfolioTrack?.nativeElement) return;
+    
+    const track = this.portfolioTrack.nativeElement;
+    const cardWidth = (track.querySelector('.portfolio-card') as HTMLElement)?.offsetWidth || 420;
+    const scrollAmount = cardWidth + 16; // card width + gap
+    
+    track.scrollBy({
+      left: scrollAmount,
+      behavior: 'smooth'
+    });
   }
 
   /* ---------- Reveal-on-scroll ---------- */

@@ -10,8 +10,8 @@
     <nav #navRef class="nav" role="navigation" aria-label="Primary" (mousemove)="onNavMove($event)">
       <a href="#about" data-id="about"        [class.active]="activeSection==='about'"        (click)="onLinkClick($event,'about')">About</a>
       <a href="#experience" data-id="experience" [class.active]="activeSection==='experience'" (click)="onLinkClick($event,'experience')">Experience</a>
-      <a href="#portfolio" data-id="portfolio" [class.active]="activeSection==='portfolio'" (click)="onLinkClick($event,'portfolio')">Portfolio</a>
       <a href="#projects" data-id="projects"  [class.active]="activeSection==='projects'"     (click)="onLinkClick($event,'projects')">Projects</a>
+      <a href="#portfolio" data-id="portfolio" [class.active]="activeSection==='portfolio'" (click)="onLinkClick($event,'portfolio')">Portfolio</a>
       <!-- <a href="#testimonials" data-id="testimonials" [class.active]="activeSection==='testimonials'" (click)="onLinkClick($event,'testimonials')">Testimonials</a> -->
 
       <!-- Alive ink + soft glow -->

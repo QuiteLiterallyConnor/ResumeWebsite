@@ -281,15 +281,58 @@ html.show-top .to-top { opacity: 1; pointer-events: auto; transform: none; }
 .link { text-decoration: none; font-weight: 700; color: var(--primary); }
 .link:hover { text-decoration: underline; }
 
+/* Section header with navigation arrows */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  
+  h2 {
+    margin: 0;
+  }
+  
+  .carousel-nav {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .carousel-arrow {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: var(--ink);
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+    
+    &:hover {
+      background: rgba(255,255,255,0.2);
+      transform: translateY(-2px);
+    }
+    
+    &.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    &.left {
+      padding-right: 2px;
+    }
+    
+    &.right {
+      padding-left: 2px;
+    }
+  }
+}
+
 /* Projects section helper */
 .projects-section { position: relative; }
-.scroll-indicator {
-  position: absolute; right: 16px; bottom: 16px; width: 40px; height: 40px; border-radius: 50%;
-  background: rgba(0,0,0,0.3); @include backdrop-blur(4px, 100%);
-  display: flex; align-items: center; justify-content: center; pointer-events: none; opacity: 0.8; z-index: 5;
-
-  &::after { @include caret(10px, 2px); transform: rotate(-45deg) translateX(-2px); }
-}
 
 /* Testimonials */
 .quotes { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); }

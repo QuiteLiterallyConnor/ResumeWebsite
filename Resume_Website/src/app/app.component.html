@@ -9,8 +9,8 @@
 <nav class="dots-nav" [attr.aria-label]="ui.nav.dotsAria">
   <a [class.active]="activeSection==='about'"        (click)="scrollTo('#about')"        [attr.aria-label]="ui.nav.about"></a>
   <a [class.active]="activeSection==='experience'"   (click)="scrollTo('#experience')"   [attr.aria-label]="ui.nav.experience"></a>
-  <a [class.active]="activeSection==='portfolio'"   (click)="scrollTo('#portfolio')"   [attr.aria-label]="ui.nav.portfolio"></a>
   <a [class.active]="activeSection==='projects'"     (click)="scrollTo('#projects')"     [attr.aria-label]="ui.nav.projects"></a>
+  <a [class.active]="activeSection==='portfolio'"   (click)="scrollTo('#portfolio')"   [attr.aria-label]="ui.nav.portfolio"></a>
   <a [class.active]="activeSection==='testimonials'" (click)="scrollTo('#testimonials')" [attr.aria-label]="ui.nav.testimonials"></a>
 </nav>
 
@@ -106,11 +106,20 @@
 
       <!-- Projects -->
       <section id="projects" class="glass section reveal" aria-label="Projects">
-        <h2>{{ ui.projects.heading }}</h2>
+        <div class="section-header">
+          <h2>{{ ui.projects.heading }}</h2>
+          <div class="carousel-nav">
+            <button class="carousel-arrow left" [class.hidden]="!showProjectsLeftArrow" (click)="scrollProjectsLeft()" aria-label="Scroll projects left">
+              ←
+            </button>
+            <button class="carousel-arrow right" [class.hidden]="!showProjectsRightArrow" (click)="scrollProjectsRight()" aria-label="Scroll projects right">
+              →
+            </button>
+          </div>
+        </div>
         <div class="projects-track" #projectsTrack role="listbox"
-            (mousedown)="startDrag($event)" (mousemove)="onDrag($event)" (mouseleave)="endDrag()"
-            (mouseup)="endDrag()" (wheel)="wheelScroll($event)" 
-            (touchstart)="startTouch($event)" (touchmove)="onTouch($event)" (touchend)="endTouch()"
+            (wheel)="wheelScroll($event)" 
+            (scroll)="checkProjectsArrows()"
             [attr.aria-label]="ui.projects.ariaCarousel">
           <article class="project tilt-card"
                   *ngFor="let p of projects" (mousemove)="tilt($event)" (mouseleave)="resetTilt($event)">
@@ -132,17 +141,21 @@
 
       <!-- Portfolio (carousel) -->
       <section id="portfolio" class="glass section reveal" aria-label="Portfolio work">
-        <h2>Portfolio</h2>
+        <div class="section-header">
+          <h2>Portfolio</h2>
+          <div class="carousel-nav">
+            <button class="carousel-arrow left" [class.hidden]="!showPortfolioLeftArrow" (click)="scrollPortfolioLeft()" aria-label="Scroll portfolio left">
+              ←
+            </button>
+            <button class="carousel-arrow right" [class.hidden]="!showPortfolioRightArrow" (click)="scrollPortfolioRight()" aria-label="Scroll portfolio right">
+              →
+            </button>
+          </div>
+        </div>
 
         <div class="portfolio-track" #portfolioTrack role="listbox"
-            (mousedown)="startDragPortfolio($event)"
-            (mousemove)="onDragPortfolio($event)"
-            (mouseleave)="endDragPortfolio()"
-            (mouseup)="endDragPortfolio()"
             (wheel)="wheelScrollPortfolio($event)"
-            (touchstart)="startTouchPortfolio($event)"
-            (touchmove)="onTouchPortfolio($event)"
-            (touchend)="endTouchPortfolio()"
+            (scroll)="checkPortfolioArrows()"
             aria-label="Portfolio carousel">
 
           <article class="portfolio-card tilt-card"
