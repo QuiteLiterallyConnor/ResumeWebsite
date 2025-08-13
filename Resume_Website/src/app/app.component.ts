@@ -188,8 +188,13 @@ export class AppComponent implements AfterViewInit {
     if (!track) return;
     const clientX = e instanceof MouseEvent ? e.clientX : e.touches[0].clientX;
     const dx = clientX - this.dragStartX;
-    track.scrollLeft = this.scrollStartX - dx;
-    this.velX = clientX - this.lastX;
+    
+    // Add a multiplier (2.5x) to make the carousel more responsive on mobile
+    const isMobile = window.innerWidth < 768;
+    const multiplier = isMobile ? 2.5 : 1;
+    
+    track.scrollLeft = this.scrollStartX - (dx * multiplier);
+    this.velX = (clientX - this.lastX) * multiplier;
     this.lastX = clientX;
   }
 
@@ -209,14 +214,14 @@ export class AppComponent implements AfterViewInit {
   // Touch event handlers
   startTouch(e: TouchEvent, trackEl?: HTMLDivElement) {
     if (e.touches.length === 1) {
-      e.preventDefault();
+      // Remove preventDefault to allow more natural touch behavior
       this.startDrag(e, trackEl);
     }
   }
 
   onTouch(e: TouchEvent, trackEl?: HTMLDivElement) {
     if (e.touches.length === 1) {
-      e.preventDefault();
+      // Remove preventDefault to allow more natural touch behavior
       this.onDrag(e, trackEl);
     }
   }
