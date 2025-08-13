@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-export type HeaderSection = 'about'|'experience'|'projects'|'testimonials';
+export type HeaderSection = 'about'|'experience'|'projects'|'testimonials'|'portfolio';
 export type Theme = 'dark'|'light'|'lava'|'constellation';
 
 export interface Me {
@@ -46,6 +46,7 @@ export interface UIStrings {
     experience: string;
     projects: string;
     testimonials: string;
+    portfolio: string;
     backToTop: string;
     dotsAria: string;
   };
@@ -88,7 +89,7 @@ export class DataComponent {
     { 
       year: 'October 2024 — Present', 
       role: 'Software Engineer', 
-      company: 'NASA – Marshall Space Flight Center',
+      company: 'NASA Marshall Space Flight Center / Arcata Associates - Huntsville AL',
       blurb: 'Maintain communication networking systems on the ISS program.'
     },
     { 
@@ -214,6 +215,7 @@ export class DataComponent {
       experience: 'Experience',
       projects: 'Projects',
       testimonials: 'Testimonials',
+      portfolio: 'Portfolio',
       backToTop: 'Back to top',
       dotsAria: 'Section navigation'
     },

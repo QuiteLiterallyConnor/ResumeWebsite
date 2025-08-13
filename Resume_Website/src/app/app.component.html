@@ -9,6 +9,7 @@
 <nav class="dots-nav" [attr.aria-label]="ui.nav.dotsAria">
   <a [class.active]="activeSection==='about'"        (click)="scrollTo('#about')"        [attr.aria-label]="ui.nav.about"></a>
   <a [class.active]="activeSection==='experience'"   (click)="scrollTo('#experience')"   [attr.aria-label]="ui.nav.experience"></a>
+  <a [class.active]="activeSection==='portfolio'"   (click)="scrollTo('#portfolio')"   [attr.aria-label]="ui.nav.portfolio"></a>
   <a [class.active]="activeSection==='projects'"     (click)="scrollTo('#projects')"     [attr.aria-label]="ui.nav.projects"></a>
   <a [class.active]="activeSection==='testimonials'" (click)="scrollTo('#testimonials')" [attr.aria-label]="ui.nav.testimonials"></a>
 </nav>
@@ -149,7 +150,7 @@
                   (mousemove)="tilt($event)" (mouseleave)="resetTilt($event)">
             <a class="thumb" [href]="v.videoLink || '#'" target="_blank" rel="noopener noreferrer"
               [attr.aria-label]="'Open video: ' + v.videoName">
-              <img [src]="v.gifs[0]?.file"
+              <img [src]="v.gifs[0].file"
                   [alt]="v.videoName + ' preview'"
                   loading="lazy" />
             </a>

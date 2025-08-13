@@ -4,7 +4,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-type Section = 'about'|'experience'|'projects'|'testimonials';
+type Section = 'about'|'experience'|'projects'|'testimonials'|'portfolio';
 export type Theme = 'dark'|'light'|'lava'|'constellation';
 
 @Component({

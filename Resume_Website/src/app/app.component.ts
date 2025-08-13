@@ -9,7 +9,7 @@ import { BgLavaComponent } from './backgrounds/bg-lava/bg-lava.component';
 import { BgConstellationComponent } from './backgrounds/bg-constellation/bg-constellation.component';
 import { DataComponent, Me, ExperienceItem, ProjectItem, TestimonialItem, UIStrings, PortfolioItem } from './data/data.component';
 
-type HeaderSection = 'about'|'experience'|'projects'|'testimonials';
+type HeaderSection = 'about'|'experience'|'portfolio'|'projects'|'testimonials';
 type Command = { k: string; t: string; h: string; fn: () => void };
 type Theme = 'dark'|'light'|'lava'|'constellation';
 
@@ -349,7 +349,7 @@ export class AppComponent implements AfterViewInit {
     document.documentElement.classList.toggle('is-scrolled', window.scrollY > 8);
 
     const sections: [HeaderSection, HTMLElement][] = [];
-    const ids: HeaderSection[] = ['about','experience','projects','testimonials'];
+    const ids: HeaderSection[] = ['about','experience','portfolio','projects','testimonials'];
     for (const id of ids) {
       const el = document.getElementById(id);
       if (el) sections.push([id, el]);
