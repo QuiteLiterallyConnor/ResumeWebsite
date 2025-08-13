@@ -88,7 +88,7 @@ export class DataComponent {
   readonly experience: ExperienceItem[] = [
     { 
       year: 'October 2024 — Present', 
-      role: 'Software Engineer', 
+      role: 'Senior Software Engineer', 
       company: 'NASA Marshall Space Flight Center / Arcata Associates - Huntsville AL',
       blurb: 'Maintain communication networking systems on the ISS program.'
     },
